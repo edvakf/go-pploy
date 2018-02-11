@@ -5,32 +5,36 @@
     </div>
   </div>
 
-  <!-- @flash.get("message").map{ message =>
+  {{#if message}}
     <div class="alert-danger">
-      <div class="container">@message</div>
+      <div class="container">{{message}}</div>
     </div>
-  } -->
+  {{/if}}
 </header>
 
 <div class="container">
   <div class="row">
 
-    <!-- main -->
-    <div class="col-md-9">
-      {{#if status.currentProject}}
-      <Main :status></Main>
-      {{else}}
-      <Welcome :status></Welcome>
-      {{/if}}
-    </div>
+    {{#if status}}
 
-    <!-- sidebar -->
-    <aside class="col-md-3">
-      {{#if status.currentProject}}
-      <Lock :status></Lock>
-      {{/if}}
-      <Projects :status></Projects>
-    </aside>
+      <!-- main -->
+      <div class="col-md-9">
+        {{#if status.currentProject}}
+        <Main :status></Main>
+        {{else}}
+        <Welcome :status></Welcome>
+        {{/if}}
+      </div>
+
+      <!-- sidebar -->
+      <aside class="col-md-3">
+        {{#if status.currentProject}}
+        <Lock :status></Lock>
+        {{/if}}
+        <Projects :status></Projects>
+      </aside>
+
+    {{/if}}
 
   </div>
 </div>
@@ -42,11 +46,24 @@ import Main from './Main.js';
 import Welcome from './Welcome.js';
 
 export default {
+  oncreate() {
+    const pathComponents = location.pathname.split('/');
+    // const pathPrefix = pathComponents.length === 2 ? null : pathComponents[pathComponents.length - 2];
+    const project = pathComponents[pathComponents.length - 1];
+
+    const fetchStatusAPI = fetch(`./api/status/${project}`).then((response) => {
+      return response.json();
+    }).then((status) => {
+      this.set({status});
+    }).catch((error) => {
+      this.set({message: error.message});
+    });
+  },
   components: {
     Lock,
     Projects,
     Main,
     Welcome,
-  }
+  },
 };
 </script>

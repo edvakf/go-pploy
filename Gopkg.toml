@@ -30,9 +30,22 @@
   unused-packages = true
 
 [[constraint]]
-  branch = "master"
+  #branch = "master"
   name = "github.com/labstack/echo"
+  version = "3.2.3"
 
 [[constraint]]
   branch = "master"
   name = "github.com/jessevdk/go-assets"
+
+[[constraint]]
+  name = "github.com/labstack/echo-contrib"
+  version = "0.4.1"
+
+[[constraint]]
+  name = "github.com/gorilla/sessions"
+  version = "1.1.0"
+
+[[constraint]]
+  name = "github.com/pkg/errors"
+  version = "0.8.0"

@@ -8,19 +8,43 @@
   version = "v3.1.0"
 
 [[projects]]
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
+  version = "v1.1"
+
+[[projects]]
+  name = "github.com/gorilla/securecookie"
+  packages = ["."]
+  revision = "667fe4e3466a040b780561fe9b51a83a3753eefc"
+  version = "v1.1"
+
+[[projects]]
+  name = "github.com/gorilla/sessions"
+  packages = ["."]
+  revision = "ca9ada44574153444b00d3fd9c8559e4cc95f896"
+  version = "v1.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/jessevdk/go-assets"
   packages = ["."]
   revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
 
 [[projects]]
-  branch = "master"
   name = "github.com/labstack/echo"
   packages = [
     ".",
     "middleware"
   ]
-  revision = "fad19bf4ea9727ef6d02e9e0a39b1a2a13a17a6a"
+  revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
+  version = "3.2.6"
+
+[[projects]]
+  name = "github.com/labstack/echo-contrib"
+  packages = ["session"]
+  revision = "05b673bd85c645d769ea2d10e933f3fa1ee1acfa"
+  version = "0.4.1"
 
 [[projects]]
   name = "github.com/labstack/gommon"
@@ -44,6 +68,12 @@
   packages = ["."]
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   branch = "master"
@@ -75,6 +105,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "446c228aa048b13a665369304f60092be3bd0eeeea79a0ee30c921ad06c58e89"
+  inputs-digest = "0e6d7240b617fbb0f62546f58c7aa18333563cee234716b187598aa134e5b836"
   solver-name = "gps-cdcl"
   solver-version = 1

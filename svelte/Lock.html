@@ -1,6 +1,6 @@
 <form class="sidebar-section box" action="./{{status.currentProject.name}}/lock" method="POST" id="lock-form"
     data-lock-user="{{status.currentProject.lock ? status.currentProject.lock.user : ''}}">
-  {{#if currentProject.lock}}
+  {{#if status.currentProject.lock}}
     <p>
       Working
       <span class="label label-default">{{status.currentProject.lock.user}}</span>
