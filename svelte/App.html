@@ -1,0 +1,52 @@
+<header class="navbar navbar-default" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="./">pploy</a>
+    </div>
+  </div>
+
+  <!-- @flash.get("message").map{ message =>
+    <div class="alert-danger">
+      <div class="container">@message</div>
+    </div>
+  } -->
+</header>
+
+<div class="container">
+  <div class="row">
+
+    <!-- main -->
+    <div class="col-md-9">
+      {{#if status.currentProject}}
+      <Main :status></Main>
+      {{else}}
+      <Welcome :status></Welcome>
+      {{/if}}
+    </div>
+
+    <!-- sidebar -->
+    <aside class="col-md-3">
+      {{#if status.currentProject}}
+      <Lock :status></Lock>
+      {{/if}}
+      <Projects :status></Projects>
+    </aside>
+
+  </div>
+</div>
+
+<script>
+import Lock from './Lock.js';
+import Projects from './Projects.js';
+import Main from './Main.js';
+import Welcome from './Welcome.js';
+
+export default {
+  components: {
+    Lock,
+    Projects,
+    Main,
+    Welcome,
+  }
+};
+</script>

@@ -1,0 +1,41 @@
+<div class="panel {{status.currentProject.lock && status.currentProject.lock.user === status.currentUser ? 'panel-danger' : 'panel-primary'}}">
+  <div class="panel-heading">
+    <h2 class="panel-title">{{status.currentProject.name}}</h2>
+  </div>
+
+  {{#if status.currentProject.lock && status.currentProject.lock.user === status.currentUser}}
+    <div class="well">
+      <h4>Checkout</h4>
+      <form action="./api/checkout/{{status.currentProject.name}}" method="post" class="form-inline command-form" target="command-log-frame">
+        <input type="text" class="form-control" name="ref" value="origin/master" required>
+        <button class="btn btn-success checkout-button">Checkout</button>
+      </form>
+      <form action="{{status.currentProject.name}}" method="post" class="command-form" target="command-log-frame">
+        {{#each status.currentProject.deployEnvs as env}}
+          <h4>Deploy to {{env}} environment</h4>
+          <button class="btn btn-success deploy-button" name="target" disabled value="@env">Deploy to {{env}} environment</button>
+        {{/each}}
+      </form>
+    </div>
+  {{/if}}
+
+  <div class="panel-body">
+    {{#if status.currentProject.readme}}
+      <div>{{{status.currentProject.readme}}}</div>
+    {{/if}}
+
+    <div id="command-log" class="hidden embed-responsive embed-responsive-16by9">
+      <iframe name="command-log-frame" class="log-frame embed-responsive-item" src="about:blank"></iframe>
+    </div>
+
+    <h3>Recent Commits</h3>
+    <div id="commit-log" class="embed-responsive embed-responsive-16by9">
+      <iframe class="log-frame embed-responsive-item" src="./{{status.currentProject.name}}/commits"></iframe>
+    </div>
+
+    <h3>Previous log <a href="./{{status.currentProject.name}}/logs?full=1" target="_blank" class="glyphicon glyphicon-hand-right"></a></h3>
+    <div class="embed-responsive embed-responsive-16by9">
+      <iframe class="log-frame embed-responsive-item" src="./{{status}}/logs?full=0"></iframe>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<form class="sidebar-section box" action="./{{status.currentProject.name}}/lock" method="POST" id="lock-form"
+    data-lock-user="{{status.currentProject.lock ? status.currentProject.lock.user : ''}}">
+  {{#if currentProject.lock}}
+    <p>
+      Working
+      <span class="label label-default">{{status.currentProject.lock.user}}</span>
+    </p>
+    <p>
+      Time left
+      <span class="label label-danger time-left" data-seconds="{{status.currentProject.lock.secondsLeft}}">
+        {{status.currentProject.lock.minutesAndSecondsLeft}}
+      </span>
+    </p>
+    {{#if status.currentProject.lock.user === status.currentUser}}
+      <button class="btn btn-warning btn-block" name="operation" value="extend">Extend 10 minutes</button>
+      <button class="btn btn-success btn-block" name="operation" value="release">Finish deploying</button>
+      <input type="hidden" name="user" value="{{status.currentProject.lock.user}}">
+    {{/if}}
+  {{else}}
+    <select class="form-control" name="user">
+      <option value="">[Please Select]</option>
+      {{#each status.allUsers as user}}
+        <option value="{{user}}" selected="{{user === status.currentUser}}">
+          {{user}}
+        </option>
+      {{/each}}
+    </select>
+    <button class="btn btn-success btn-block" name="operation" value="gain">Start deploying</button>
+  {{/if}}
+</form>
+
+<style>
+.sidebar-section {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
+}
+
+.box {
+  background-color: #eee;
+}
+</style>
+
+<!-- <script>
+export default {
+  data() {
+    return {
+      fetchProject: fetch(`./api/${currentProject}/status`).then(function(response){ return response.json() })
+    };
+  }
+};
+</script> -->
