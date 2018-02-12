@@ -42,9 +42,9 @@ func ProjectDir(name string) string {
 	return ProjectsDir() + "/" + name
 }
 
-// LogDir returns the log directory for of a project
-func LogDir(name string) string {
-	return LogsDir() + "/" + name
+// LogFile returns the log file for of a project
+func LogFile(name string) string {
+	return LogsDir() + "/" + name + ".log"
 }
 
 func assetInitialized() {
@@ -74,11 +74,11 @@ func ProjectNames() ([]string, error) {
 func RemoveProjectFiles(name string) error {
 	err := os.RemoveAll(ProjectDir(name))
 	if err != nil {
-		return errors.Wrap(err, "failed to delete files")
+		return errors.Wrap(err, "failed to delete project files")
 	}
-	err = os.RemoveAll(LogDir(name))
+	err = os.Remove(LogFile(name))
 	if err != nil {
-		return errors.Wrap(err, "failed to delete files")
+		return errors.Wrap(err, "failed to delete log file")
 	}
 	return nil
 }

@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"io"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/edvakf/go-pploy/models/gitutil"
@@ -76,6 +78,34 @@ func createProject(c echo.Context) error {
 	return c.Redirect(http.StatusFound, PathPrefix+project)
 }
 
+func getLogs(c echo.Context) error {
+	project := c.Param("project")
+	if !ProjectExists(project) {
+		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+	}
+
+	logFile := workdir.LogFile(project)
+	if Exists(logFile) {
+		if c.QueryParam("full") == "1" {
+			return c.File(logFile)
+		} else {
+			f, err := os.Open(logFile)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			r := io.LimitReader(f, 10000) // first 10000 bytes
+			return c.Stream(http.StatusOK, "text/plain", r)
+		}
+	}
+	return c.NoContent(http.StatusOK)
+}
+
+func Exists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
+}
+
 type LockForm struct {
 	User      string `form:"user" validate:"required"`
 	Operation string `form:"operation" validate:"required,eq=gain|eq=release|eq=extend"`
@@ -146,6 +176,7 @@ func main() {
 	e.GET("/api/status/:project", getStatusAPI)
 	e.GET("/api/commits/:project", getCommitsAPI)
 	e.POST("/:project/lock", postLock)
+	e.GET("/:project/logs", getLogs)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう
