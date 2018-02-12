@@ -7,12 +7,12 @@
     </p>
     <p>
       Time left
-      <span class="label label-danger time-left" data-seconds="{{status.currentProject.lock.secondsLeft}}">
-        {{status.currentProject.lock.minutesAndSecondsLeft}}
+      <span class="label label-danger time-left">
+        {{minutesAndSecondsLeft(status.currentProject.lock.endTime, now)}}
       </span>
     </p>
     {{#if status.currentProject.lock.user === status.currentUser}}
-      <button class="btn btn-warning btn-block" name="operation" value="extend">Extend 10 minutes</button>
+      <button class="btn btn-warning btn-block" name="operation" value="extend">Extend</button>
       <button class="btn btn-success btn-block" name="operation" value="release">Finish deploying</button>
       <input type="hidden" name="user" value="{{status.currentProject.lock.user}}">
     {{/if}}
@@ -41,12 +41,34 @@
 }
 </style>
 
-<!-- <script>
+<script>
+function pad02(num) {
+  return ('0' + num).substr(-2);
+}
+
+function secondsToString(seconds) {
+  return pad02(Math.floor(seconds/60)) + ':' + pad02(Math.floor(seconds%60));
+}
+
 export default {
+  oncreate() {
+    this.interval = setInterval(() => {
+      this.set({ now: Date.now() });
+    }, 1000);
+  },
+
+  ondestroy() {
+    clearInterval(this.interval);
+  },
+
   data() {
     return {
-      fetchProject: fetch(`./api/${currentProject}/status`).then(function(response){ return response.json() })
+      now: Date.now(),
     };
+  },
+
+  helpers: {
+    minutesAndSecondsLeft: (endTime, now) => secondsToString((Date.parse(endTime) - now) / 1000),
   }
 };
-</script> -->
+</script>

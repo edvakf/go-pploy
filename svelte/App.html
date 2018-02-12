@@ -51,7 +51,12 @@ export default {
     // const pathPrefix = pathComponents.length === 2 ? null : pathComponents[pathComponents.length - 2];
     const project = pathComponents[pathComponents.length - 1];
 
-    const fetchStatusAPI = fetch(`./api/status/${project}`).then((response) => {
+    const fetchStatusAPI = fetch(
+      `./api/status/${project}`,
+      {
+        credentials: 'same-origin',
+      }
+    ).then((response) => {
       return response.json();
     }).then((status) => {
       this.set({status});
