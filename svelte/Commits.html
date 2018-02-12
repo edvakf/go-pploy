@@ -1,0 +1,64 @@
+<table>
+  <tbody>
+    {{#each commits as commit}}
+      <tr class="header">
+        <td class="hash">
+          {{commit.hash.slice(0, 7)}}
+        </td>
+        <td nowrap>{{commit.author}}</td>
+        <td>
+          {{#each commit.otherRefs as ref}}
+            {{#if ref === "HEAD"}}
+              <span class="ref head">HEAD</span>
+            {{elseif ref.startsWith("refs/remotes/origin/master")}}
+              <span class="ref master">origin/master</span>
+            {{elseif ref.startsWith("refs/remotes/")}}
+              <span class="ref">{{ref.slice("refs/remotes/".length - 1)}}</span>
+            {{elseif ref.startsWith("refs/heads/")}}
+            {{elseif ref.startsWith("refs/tags/")}}
+              <span class="ref tag">{{ref.slice("refs/tags/".length - 1)}}</span>
+            {{else}}
+              <span class="ref">{{ref}}</span>
+            {{/if}}
+          {{/each}}
+        </td>
+        <td nowrap>{{commit.time}}</td>
+      </tr>
+      <tr class="subject">
+        <td colspan="5">{{commit.subject}}</td>
+      </tr>
+      <tr>
+        <td class="code" colspan="5">
+        <pre>{{commit.nameStatus}}</pre>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
+
+
+<script>
+export default {
+  oncreate() {
+    const project = this.get("project");
+
+    const fetchStatusAPI = fetch(
+      `./api/commits/${project.name}`,
+      {
+        credentials: 'same-origin',
+      }
+    ).then((response) => {
+      return response.json();
+    }).then((commits) => {
+      this.set({commits});
+    }).catch((error) => {
+      this.set({message: error.message});
+    });
+  },
+  data() {
+    return {
+      commits: [],
+    };
+  },
+};
+</script>

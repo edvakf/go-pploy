@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/edvakf/go-pploy/models/gitutil"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/workdir"
 	"github.com/gorilla/sessions"
@@ -40,6 +41,20 @@ func getStatusAPI(c echo.Context) error {
 		AllUsers:       []string{"foo", "bar"},
 		CurrentUser:    getCurrentUser(c),
 	})
+}
+
+func getCommitsAPI(c echo.Context) error {
+	project := c.Param("project")
+	if !ProjectExists(project) {
+		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+	}
+
+	commits, err := gitutil.RecentCommits(workdir.ProjectDir(project))
+	if err != nil {
+		return err // TODO
+	}
+
+	return c.JSON(http.StatusOK, commits)
 }
 
 func getCurrentUser(c echo.Context) *string {
@@ -129,11 +144,11 @@ func main() {
 	e.POST("/_create", createProject)
 	e.GET("/api/status/", getStatusAPI)
 	e.GET("/api/status/:project", getStatusAPI)
+	e.GET("/api/commits/:project", getCommitsAPI)
 	e.POST("/:project/lock", postLock)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
-	e.GET("/:project/", getIndex) // rewrite middlewareでできそう
-	e.GET("/:project", getIndex)  // rewrite middlewareでできそう
-	e.GET("/", getIndex)          // rewrite middlewareでできそう
+	e.GET("/:project", getIndex) // rewrite middlewareでできそう
+	e.GET("/", getIndex)         // rewrite middlewareでできそう
 	// e.Static("/public", "/Users/atsushi/go/src/github.com/edvakf/go-pploy/public")
 	e.Logger.Fatal(e.Start(":1323"))
 }

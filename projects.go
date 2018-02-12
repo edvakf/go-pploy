@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"os/exec"
 	"regexp"
 	"time"
@@ -59,8 +58,9 @@ func GetAllProjects() ([]Project, error) {
 }
 
 func CreateProject(url string) (string, error) {
-	os.Chdir(workdir.ProjectsDir())
-	err := exec.Command("git", "clone", url).Run()
+	cmd := exec.Command("git", "clone", url)
+	cmd.Dir = workdir.ProjectsDir()
+	err := cmd.Run()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to clone repo")
 	}

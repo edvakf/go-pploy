@@ -30,7 +30,7 @@
 
     <h3>Recent Commits</h3>
     <div id="commit-log" class="embed-responsive embed-responsive-16by9">
-      <iframe class="log-frame embed-responsive-item" src="./{{status.currentProject.name}}/commits"></iframe>
+      <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="loadCommits(this)"></iframe>
     </div>
 
     <h3>Previous log <a href="./{{status.currentProject.name}}/logs?full=1" target="_blank" class="glyphicon glyphicon-hand-right"></a></h3>
@@ -39,3 +39,31 @@
     </div>
   </div>
 </div>
+
+<style>
+.log-frame {
+  border: solid black 2px !important; /* override twitter bootstrap's embed-responsive iframe */
+}
+.log-frame.loading {
+  transition-duration: 0.4s;
+  transition-property: border;
+  border: solid red 2px !important;
+}
+</style>
+
+<script>
+import Commits from './Commits.js';
+
+export default {
+  methods: {
+    loadCommits(frame) {
+      new Commits({
+        target: frame.contentDocument.querySelector('commits'),
+        data: {
+          project: this.get("status").currentProject,
+        },
+      });
+    },
+  },
+};
+</script>
