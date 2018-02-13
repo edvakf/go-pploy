@@ -101,6 +101,16 @@ func getLogs(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+func postCheckout(c echo.Context) error {
+	project := c.Param("project")
+	if !ProjectExists(project) {
+		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+	}
+
+	r := gitutil.Checkout(workdir.ProjectDir(project), "origin/master")
+	return c.Stream(http.StatusOK, "text/plain", r)
+}
+
 func Exists(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil
@@ -177,6 +187,7 @@ func main() {
 	e.GET("/api/commits/:project", getCommitsAPI)
 	e.POST("/:project/lock", postLock)
 	e.GET("/:project/logs", getLogs)
+	e.POST("/:project/checkout", postCheckout)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう

@@ -6,14 +6,14 @@
   {{#if status.currentProject.lock && status.currentProject.lock.user === status.currentUser}}
     <div class="well">
       <h4>Checkout</h4>
-      <form action="./api/checkout/{{status.currentProject.name}}" method="post" class="form-inline command-form" target="command-log-frame">
+      <form action="./{{status.currentProject.name}}/checkout" method="post" class="form-inline command-form" target="command-log-frame" on:submit="submitCommandForm()">
         <input type="text" class="form-control" name="ref" value="origin/master" required>
         <button class="btn btn-success checkout-button">Checkout</button>
       </form>
-      <form action="{{status.currentProject.name}}" method="post" class="command-form" target="command-log-frame">
+      <form action="./{{status.currentProject.name}}/deploy" method="post" class="command-form" target="command-log-frame">
         {{#each status.currentProject.deployEnvs as env}}
-          <h4>Deploy to {{env}} environment</h4>
-          <button class="btn btn-success deploy-button" name="target" disabled value="@env">Deploy to {{env}} environment</button>
+          <h4>Deploy to {{env}}</h4>
+          <button class="btn btn-success deploy-button" name="target" disabled value="@env">Deploy to {{env}}</button>
         {{/each}}
       </form>
     </div>
@@ -24,13 +24,13 @@
       <div>{{{status.currentProject.readme}}}</div>
     {{/if}}
 
-    <div id="command-log" class="hidden embed-responsive embed-responsive-16by9">
-      <iframe name="command-log-frame" class="log-frame embed-responsive-item" src="about:blank"></iframe>
+    <div id="command-log" class="hidden embed-responsive embed-responsive-16by9" ref:commandLog>
+      <iframe name="command-log-frame" class="log-frame embed-responsive-item" src="about:blank" ref:commandLogFrame on:load="doneCommand()"></iframe>
     </div>
 
     <h3>Recent Commits</h3>
     <div id="commit-log" class="embed-responsive embed-responsive-16by9">
-      <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="loadCommits(this)"></iframe>
+      <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="loadCommits()" ref:commitLogFrame></iframe>
     </div>
 
     <h3>Previous log <a href="./{{status.currentProject.name}}/logs?full=1" target="_blank" class="glyphicon glyphicon-hand-right"></a></h3>
@@ -54,11 +54,38 @@
 <script>
 import Commits from './Commits.js';
 
+function disableAllButtons() {
+  setTimeout(function() {
+    Array.from(document.querySelectorAll('button'))
+      .forEach(b => b.setAttribute('disabled', 'disabled'));
+  }, 10);
+}
+
+function enableAllButtons() {
+  setTimeout(function() {
+    Array.from(document.querySelectorAll('button'))
+      .forEach(b => b.removeAttribute('disabled'));
+  }, 10);
+}
+
 export default {
   methods: {
-    loadCommits(frame) {
+    submitCommandForm() {
+      this.refs.commandLog.classList.remove('hidden');
+      this.refs.commandLogFrame.classList.add('loading');
+      disableAllButtons();
+    },
+    doneCommand() {
+      if (!this.refs.commandLogFrame) {
+        return; // on:load is called while dom is still incomplete
+      }
+      this.refs.commandLogFrame.classList.remove('loading');
+      this.loadCommits();
+      enableAllButtons();
+    },
+    loadCommits() {
       new Commits({
-        target: frame.contentDocument.querySelector('commits'),
+        target: this.refs.commitLogFrame.contentDocument.querySelector('commits'),
         data: {
           project: this.get("status").currentProject,
         },
