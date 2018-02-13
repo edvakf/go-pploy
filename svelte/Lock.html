@@ -68,7 +68,13 @@ export default {
   },
 
   helpers: {
-    minutesAndSecondsLeft: (endTime, now) => secondsToString((Date.parse(endTime) - now) / 1000),
-  }
+    minutesAndSecondsLeft: (endTime, now) => {
+      const timeLeft = Date.parse(endTime) - now;
+      if (timeLeft < 0) {
+        location.reload();
+      }
+      return secondsToString(timeLeft / 1000);
+    },
+  },
 };
 </script>
