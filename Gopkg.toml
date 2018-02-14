@@ -30,11 +30,10 @@
   unused-packages = true
 
 [[constraint]]
-  #branch = "master"
   name = "github.com/labstack/echo"
   version = "3.2.3"
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/jessevdk/go-assets"
 

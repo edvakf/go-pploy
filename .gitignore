@@ -1,4 +1,8 @@
 /vendor
 /assets.go
 /assets/components/*
+!/assets/components/.keep
+/assets/bootstrap/*
+!/assets/bootstrap/.keep
 /pploy
+/node_modules
