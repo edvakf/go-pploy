@@ -36,7 +36,7 @@ func All() ([]Project, error) {
 	for _, name := range names {
 		p, err := FromName(name)
 		if err != nil {
-			return nil, errors.Wrap(err, "project not found") // should not happen
+			continue // should not happen
 		}
 		locks.Check(name, now)
 		projects = append(projects, *p)
@@ -150,13 +150,11 @@ func (p *Project) LogReader(full bool) (io.ReadCloser, error) {
 }
 
 func removeEmpty(a []string) (r []string) {
-	// fmt.Println(a)
 	for _, s := range a {
 		if s != "" {
 			r = append(r, s)
 		}
 	}
-	// fmt.Println(r)
 	return
 }
 
