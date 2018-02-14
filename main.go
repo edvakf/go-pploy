@@ -162,11 +162,6 @@ func transferEncodingChunked(c echo.Context, r io.Reader) error {
 	return nil
 }
 
-func Exists(filename string) bool {
-	_, err := os.Stat(filename)
-	return err == nil
-}
-
 type CustomValidator struct {
 	validator *validator.Validate
 }
