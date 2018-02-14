@@ -69,20 +69,44 @@ function enableAllButtons() {
 }
 
 export default {
+  oncreate() {
+    // follow scroll
+    const f = this.refs.commandLogFrame;
+    this.interval = setInterval(() => {
+      if (f.classList.contains('loading')) {
+        f.contentWindow.scrollTo(0, f.contentDocument.body.offsetHeight);
+      }
+    }, 200);
+  },
+
+  ondestroy() {
+    clearInterval(this.interval);
+  },
+
   methods: {
     submitCommandForm() {
       this.refs.commandLog.classList.remove('hidden');
+
+      // set border to red
       this.refs.commandLogFrame.classList.add('loading');
+
       disableAllButtons();
     },
+
     doneCommand() {
       if (!this.refs.commandLogFrame) {
         return; // on:load is called while dom is still incomplete
       }
+
+      // set border to back to black
       this.refs.commandLogFrame.classList.remove('loading');
+
+      // TODO: this should only be done after checkout
       this.loadCommits();
+
       enableAllButtons();
     },
+
     loadCommits() {
       new Commits({
         target: this.refs.commitLogFrame.contentDocument.querySelector('commits'),
