@@ -11,26 +11,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Project プロジェクト。DeployEnvsとReadmeはAllProjectではセットされずCurrentProjectではセットされる
-type Project struct {
-	Lock       *models.Lock `json:"lock"`
-	Name       string       `json:"name"`
-	DeployEnvs []string     `json:"deployEnvs"`
-	Readme     *string      `json:"readme"`
-}
-
 // Status ステータスAPIのレスポンス形式
 type Status struct {
-	AllProjects    []Project `json:"allProjects"`
-	CurrentProject *Project  `json:"currentProject"`
-	AllUsers       []string  `json:"allUsers"`
-	CurrentUser    *string   `json:"currentUser"`
+	AllProjects    []models.Project `json:"allProjects"`
+	CurrentProject *models.Project  `json:"currentProject"`
+	AllUsers       []string         `json:"allUsers"`
+	CurrentUser    *string          `json:"currentUser"`
 }
 
-func MakeCurrentProject(projects []Project, name string) *Project {
+func MakeCurrentProject(projects []models.Project, name string) *models.Project {
 	for _, project := range projects {
 		if project.Name == name {
-			return &Project{
+			return &models.Project{
 				Lock:       project.Lock,
 				Name:       project.Name,
 				DeployEnvs: []string{"production"}, // TODO: read from config
@@ -41,15 +33,15 @@ func MakeCurrentProject(projects []Project, name string) *Project {
 	return nil
 }
 
-func GetAllProjects() ([]Project, error) {
+func GetAllProjects() ([]models.Project, error) {
 	names, err := workdir.ProjectNames()
 	if err != nil {
 		return nil, err
 	}
-	projects := []Project{}
+	projects := []models.Project{}
 	now := time.Now()
 	for _, name := range names {
-		projects = append(projects, Project{
+		projects = append(projects, models.Project{
 			Lock: locks.Check(name, now),
 			Name: name,
 		})

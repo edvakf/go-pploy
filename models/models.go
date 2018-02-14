@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 // Lock is project's deployment lock
 type Lock struct {
@@ -17,4 +19,12 @@ type Commit struct {
 	Subject    string    `json:"subject"`
 	Body       string    `json:"body"`
 	NameStatus string    `json:"nameStatus"`
+}
+
+// Project is a git-controlled deployable project directory
+type Project struct {
+	Lock       *Lock    `json:"lock"`
+	Name       string   `json:"name"`
+	DeployEnvs []string `json:"deployEnvs"`
+	Readme     *string  `json:"readme"`
 }

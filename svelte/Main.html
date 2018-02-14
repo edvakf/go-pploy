@@ -10,10 +10,10 @@
         <input type="text" class="form-control" name="ref" value="origin/master" required>
         <button class="btn btn-success checkout-button">Checkout</button>
       </form>
-      <form action="./{{status.currentProject.name}}/deploy" method="post" class="command-form" target="command-log-frame">
+      <form action="./{{status.currentProject.name}}/deploy" method="post" class="command-form" target="command-log-frame" on:submit="submitCommandForm()">
         {{#each status.currentProject.deployEnvs as env}}
           <h4>Deploy to {{env}}</h4>
-          <button class="btn btn-success deploy-button" name="target" disabled value="@env">Deploy to {{env}}</button>
+          <button class="btn btn-success deploy-button" name="target" disabled value="{{env}}">Deploy to {{env}}</button>
         {{/each}}
       </form>
     </div>

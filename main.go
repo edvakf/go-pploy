@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/edvakf/go-pploy/models"
 	"github.com/edvakf/go-pploy/models/gitutil"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/workdir"
@@ -32,7 +33,7 @@ func getStatusAPI(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	var project *Project
+	var project *models.Project
 	if p := c.Param("project"); p == "" {
 		project = nil
 	} else {
@@ -107,12 +108,55 @@ func postCheckout(c echo.Context) error {
 	if !ProjectExists(project) {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
+	p := models.Project{Name: project}
 
-	r, err := gitutil.Checkout(workdir.ProjectDir(project), "origin/master") //TODO: c.FormValue
+	ref := c.FormValue("ref")
+
+	r, err := p.Checkout(ref)
 	if err != nil {
 		return err
 	}
 
+	c.Response().Header().Set("Transfer-Encoding", "chunked")
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextPlainCharsetUTF8)
+	c.Response().Header().Set("X-Content-Type-Options", "nosniff")
+	c.Response().WriteHeader(http.StatusOK)
+
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		c.Response().Write([]byte(scanner.Text() + "\n"))
+		c.Response().Flush()
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func postDeploy(c echo.Context) error {
+	project := c.Param("project")
+	if !ProjectExists(project) {
+		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+	}
+	p := models.Project{Name: project}
+
+	env := c.FormValue("env")
+	user := getCurrentUser(c)
+	if user == nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "user not provided")
+	}
+
+	r, err := p.Deploy(env, *user)
+	if err != nil {
+		return err
+	}
+
+	return transferEncodingChunked(c, r)
+}
+
+func transferEncodingChunked(c echo.Context, r io.Reader) error {
 	c.Response().Header().Set("Transfer-Encoding", "chunked")
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextPlainCharsetUTF8)
 	c.Response().Header().Set("X-Content-Type-Options", "nosniff")
@@ -209,6 +253,7 @@ func main() {
 	e.GET("/:project/logs", getLogs)
 	e.POST("/:project/checkout", postCheckout)
 	e.GET("/:project/checkout", postCheckout)
+	e.POST("/:project/deploy", postDeploy)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう
