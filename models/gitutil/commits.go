@@ -5,12 +5,22 @@ import (
 	"strings"
 	"time"
 
-	"github.com/edvakf/go-pploy/models"
 	"github.com/pkg/errors"
 )
 
+// Commit is the structured git commit object
+type Commit struct {
+	Hash       string    `json:"hash"`
+	Time       time.Time `json:"time"`
+	Author     string    `json:"author"`
+	OtherRefs  []string  `json:"otherRefs"`
+	Subject    string    `json:"subject"`
+	Body       string    `json:"body"`
+	NameStatus string    `json:"nameStatus"`
+}
+
 // RecentCommits runs `git log` and parse the result
-func RecentCommits(dir string) ([]models.Commit, error) {
+func RecentCommits(dir string) ([]Commit, error) {
 	delim1 := "1PPLOY1YOLPP1"
 	delim2 := "2PPLOY2YOLPP2"
 	format := delim1 + strings.Join([]string{"%H", "%ai", "%an", "%d", "%s", "%b", ""}, delim2) // hash, isoLikeDate, author, refs, subject, body, nameStatus
@@ -33,7 +43,7 @@ func RecentCommits(dir string) ([]models.Commit, error) {
 	}
 
 	chunks := strings.Split(string(out), delim1)
-	commits := []models.Commit{}
+	commits := []Commit{}
 	for _, chunk := range chunks[1:] {
 		parts := strings.Split(chunk, delim2)
 
@@ -42,7 +52,7 @@ func RecentCommits(dir string) ([]models.Commit, error) {
 			return nil, errors.Wrap(err, "failed to parse time")
 		}
 
-		commits = append(commits, models.Commit{
+		commits = append(commits, Commit{
 			Hash:       parts[0],
 			Time:       t,
 			Author:     parts[2],

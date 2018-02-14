@@ -8,9 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/edvakf/go-pploy/models"
 	"github.com/edvakf/go-pploy/models/gitutil"
 	"github.com/edvakf/go-pploy/models/locks"
+	"github.com/edvakf/go-pploy/models/project"
 	"github.com/edvakf/go-pploy/models/workdir"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
@@ -29,31 +29,40 @@ func getIndex(c echo.Context) error {
 }
 
 func getStatusAPI(c echo.Context) error {
-	allProjects, err := GetAllProjects()
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+	}
+	err = p.ReadReadme()
 	if err != nil {
 		return err
 	}
-	var project *models.Project
-	if p := c.Param("project"); p == "" {
-		project = nil
-	} else {
-		project = MakeCurrentProject(allProjects, p)
+	err = p.ReadDeployEnvs()
+	if err != nil {
+		return err
 	}
+	p.Lock = locks.Check(p.Name, time.Now())
+
+	all, err := project.All()
+	if err != nil {
+		return err
+	}
+
 	return c.JSON(http.StatusOK, Status{
-		AllProjects:    allProjects,
-		CurrentProject: project,
+		AllProjects:    all,
+		CurrentProject: p,
 		AllUsers:       []string{"foo", "bar"},
 		CurrentUser:    getCurrentUser(c),
 	})
 }
 
 func getCommitsAPI(c echo.Context) error {
-	project := c.Param("project")
-	if !ProjectExists(project) {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	commits, err := gitutil.RecentCommits(workdir.ProjectDir(project))
+	commits, err := gitutil.RecentCommits(workdir.ProjectDir(p.Name))
 	if err != nil {
 		return err // TODO
 	}
@@ -73,20 +82,20 @@ func getCurrentUser(c echo.Context) *string {
 
 func createProject(c echo.Context) error {
 	url := c.FormValue("url")
-	project, err := CreateProject(url)
+	p, err := project.Clone(url)
 	if err != nil {
-		return err // TODO: これどうなる？
+		return err // TODO: flashつけてトップにリダイレクト
 	}
-	return c.Redirect(http.StatusFound, PathPrefix+project)
+	return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 }
 
 func getLogs(c echo.Context) error {
-	project := c.Param("project")
-	if !ProjectExists(project) {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	logFile := workdir.LogFile(project)
+	logFile := workdir.LogFile(p.Name)
 	if Exists(logFile) {
 		if c.QueryParam("full") == "1" {
 			return c.File(logFile)
@@ -104,11 +113,10 @@ func getLogs(c echo.Context) error {
 }
 
 func postCheckout(c echo.Context) error {
-	project := c.Param("project")
-	if !ProjectExists(project) {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
-	p := models.Project{Name: project}
 
 	ref := c.FormValue("ref")
 
@@ -117,36 +125,21 @@ func postCheckout(c echo.Context) error {
 		return err
 	}
 
-	c.Response().Header().Set("Transfer-Encoding", "chunked")
-	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextPlainCharsetUTF8)
-	c.Response().Header().Set("X-Content-Type-Options", "nosniff")
-	c.Response().WriteHeader(http.StatusOK)
-
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		c.Response().Write([]byte(scanner.Text() + "\n"))
-		c.Response().Flush()
-	}
-
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-
-	return nil
+	return transferEncodingChunked(c, r)
 }
 
 func postDeploy(c echo.Context) error {
-	project := c.Param("project")
-	if !ProjectExists(project) {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
-	p := models.Project{Name: project}
 
-	env := c.FormValue("env")
 	user := getCurrentUser(c)
 	if user == nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "user not provided")
 	}
+
+	env := c.FormValue("env")
 
 	r, err := p.Deploy(env, *user)
 	if err != nil {
@@ -194,8 +187,8 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 }
 
 func postLock(c echo.Context) error {
-	project := c.Param("project")
-	if !ProjectExists(project) {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
@@ -208,17 +201,17 @@ func postLock(c echo.Context) error {
 	}
 
 	if lf.Operation == "gain" {
-		_, err := locks.Gain(project, lf.User, time.Now())
+		_, err := locks.Gain(p.Name, lf.User, time.Now())
 		if err != nil {
 			return err
 		}
 	} else if lf.Operation == "release" {
-		err := locks.Release(project, lf.User, time.Now())
+		err := locks.Release(p.Name, lf.User, time.Now())
 		if err != nil {
 			return err
 		}
 	} else if lf.Operation == "extend" {
-		_, err := locks.Extend(project, lf.User, time.Now())
+		_, err := locks.Extend(p.Name, lf.User, time.Now())
 		if err != nil {
 			return err
 		}
@@ -230,7 +223,7 @@ func postLock(c echo.Context) error {
 	sess.Values["user"] = lf.User
 	sess.Save(c.Request(), c.Response())
 
-	return c.Redirect(http.StatusFound, PathPrefix+project)
+	return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 }
 
 var SessionSecret string
