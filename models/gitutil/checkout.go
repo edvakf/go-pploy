@@ -2,12 +2,14 @@ package gitutil
 
 import (
 	"io"
-	"os/exec"
 	"strings"
+
+	"github.com/edvakf/go-pploy/unbuffered"
+	"github.com/pkg/errors"
 )
 
 // Checkout runs a better version of `git checkout` or `git pull`
-func Checkout(dir string, commit string) io.Reader {
+func Checkout(dir string, commit string) (io.Reader, error) {
 	script := strings.Join([]string{
 		"git fetch --prune",
 		"git checkout -f $DEPLOY_COMMIT",
@@ -17,16 +19,19 @@ func Checkout(dir string, commit string) io.Reader {
 		"git submodule init",
 		"git submodule update --recursive",
 	}, " && ")
-	cmd := exec.Command("bash", "-x", "-c", "("+script+") 2>&1")
+	cmd := unbuffered.Command("bash -x -c '" + script + "'")
 
 	cmd.Dir = dir
 	cmd.Env = append(cmd.Env, "DEPLOY_COMMIT="+commit)
-	r, w := io.Pipe()
-	cmd.Stdout = w
-	cmd.Stderr = w
-	go func() {
-		defer w.Close()
-		_ = cmd.Run()
-	}()
-	return r
+	out, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
+	err = cmd.Start()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to run command")
+	}
+	go cmd.Wait()
+
+	return out, nil
 }

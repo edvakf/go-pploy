@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"io"
 	"net/http"
@@ -107,8 +108,27 @@ func postCheckout(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	r := gitutil.Checkout(workdir.ProjectDir(project), "origin/master")
-	return c.Stream(http.StatusOK, "text/plain", r)
+	r, err := gitutil.Checkout(workdir.ProjectDir(project), "origin/master") //TODO: c.FormValue
+	if err != nil {
+		return err
+	}
+
+	c.Response().Header().Set("Transfer-Encoding", "chunked")
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextPlainCharsetUTF8)
+	c.Response().Header().Set("X-Content-Type-Options", "nosniff")
+	c.Response().WriteHeader(http.StatusOK)
+
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		c.Response().Write([]byte(scanner.Text() + "\n"))
+		c.Response().Flush()
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func Exists(filename string) bool {
@@ -163,7 +183,7 @@ func postLock(c echo.Context) error {
 	}
 
 	sess, _ := session.Get("session", c)
-	sess.Values["user"] = "bar"
+	sess.Values["user"] = lf.User
 	sess.Save(c.Request(), c.Response())
 
 	return c.Redirect(http.StatusFound, PathPrefix+project)
@@ -188,6 +208,7 @@ func main() {
 	e.POST("/:project/lock", postLock)
 	e.GET("/:project/logs", getLogs)
 	e.POST("/:project/checkout", postCheckout)
+	e.GET("/:project/checkout", postCheckout)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう
