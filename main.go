@@ -95,21 +95,15 @@ func getLogs(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	logFile := workdir.LogFile(p.Name)
-	if Exists(logFile) {
-		if c.QueryParam("full") == "1" {
-			return c.File(logFile)
-		} else {
-			f, err := os.Open(logFile)
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-			r := io.LimitReader(f, 10000) // first 10000 bytes
-			return c.Stream(http.StatusOK, "text/plain", r)
+	r, err := p.LogReader(c.QueryParam("full") == "1")
+	if err != nil {
+		if os.IsNotExist(err) {
+			return c.NoContent(http.StatusOK)
 		}
+		return err
 	}
-	return c.NoContent(http.StatusOK)
+	defer r.Close()
+	return c.Stream(http.StatusOK, echo.MIMETextPlainCharsetUTF8, r)
 }
 
 func postCheckout(c echo.Context) error {

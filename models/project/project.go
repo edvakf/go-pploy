@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/edvakf/go-pploy/models"
+	"github.com/edvakf/go-pploy/models/headreader"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/workdir"
 	"github.com/edvakf/go-pploy/unbuffered"
@@ -132,6 +133,20 @@ func (p *Project) ReadDeployEnvs() error {
 	}
 
 	return nil
+}
+
+// LogReader returns a ReadCloser which reads either an entire file
+// or first 10000 bytes of it depending on the `full` parameter
+func (p *Project) LogReader(full bool) (io.ReadCloser, error) {
+	logFile := workdir.LogFile(p.Name)
+	f, err := os.Open(logFile)
+	if err != nil {
+		return nil, err
+	}
+	if full {
+		return f, nil
+	}
+	return headreader.New(f, 10000), nil // first 10000 bytes
 }
 
 func removeEmpty(a []string) (r []string) {
