@@ -99,7 +99,16 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	cmd.Env = append(cmd.Env, "DEPLOY_ENV="+env)
 	cmd.Env = append(cmd.Env, "DEPLOY_USER="+user)
 
-	return streamStdout(cmd)
+	r, err := streamStdout(cmd)
+	if err != nil {
+		return nil, err
+	}
+	// write to log file
+	f, err := os.OpenFile(workdir.LogFile(p.Name), os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return nil, err
+	}
+	return io.TeeReader(r, f), nil
 }
 
 // ReadReadme reads readme.html file from the project directory
