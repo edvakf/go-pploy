@@ -1,7 +1,7 @@
 pploy: main.go assets.go
 	go build -o pploy .
 
-assets.go: assets/index.html assets/index.js components bootstrap
+assets.go: assets/index.html assets/index.js components bootstrap izitoast
 	go-assets-builder assets/ > $@
 
 components: $(wildcard svelte/*.html)
@@ -9,6 +9,9 @@ components: $(wildcard svelte/*.html)
 
 bootstrap: node_modules
 	rsync -a node_modules/bootstrap/dist/ assets/bootstrap/
+
+izitoast: node_modules
+	rsync -a node_modules/izitoast/dist/ assets/izitoast/
 
 node_modules:
 	npm install

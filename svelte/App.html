@@ -4,12 +4,6 @@
       <a class="navbar-brand" href="./">pploy</a>
     </div>
   </div>
-
-  {{#if message}}
-    <div class="alert-danger">
-      <div class="container">{{message}}</div>
-    </div>
-  {{/if}}
 </header>
 
 <div class="container">
@@ -69,7 +63,8 @@ export default {
       }).then((status) => {
         this.set({status});
       }).catch((error) => {
-        this.set({message: error.message});
+        console.log(error);
+        iziToast.error({message: error.message, position: 'topRight'});
       });
     },
   },

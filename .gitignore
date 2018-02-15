@@ -4,5 +4,7 @@
 !/assets/components/.keep
 /assets/bootstrap/*
 !/assets/bootstrap/.keep
+/assets/izitoast/*
+!/assets/izitoast/.keep
 /pploy
 /node_modules

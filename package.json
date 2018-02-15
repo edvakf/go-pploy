@@ -19,6 +19,7 @@
     "svelte-cli": "^2.2.0"
   },
   "dependencies": {
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "izitoast": "^1.2.0"
   }
 }
