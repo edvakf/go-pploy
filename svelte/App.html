@@ -51,18 +51,27 @@ export default {
     // const pathPrefix = pathComponents.length === 2 ? null : pathComponents[pathComponents.length - 2];
     const project = pathComponents[pathComponents.length - 1];
 
-    const fetchStatusAPI = fetch(
-      `./api/status/${project}`,
-      {
-        credentials: 'same-origin',
-      }
-    ).then((response) => {
-      return response.json();
-    }).then((status) => {
-      this.set({status});
-    }).catch((error) => {
-      this.set({message: error.message});
-    });
+    this.fetchStatusAPI(project);
+
+    setInterval(() => {
+      this.fetchStatusAPI(project);
+    }, 10000);
+  },
+  methods: {
+    fetchStatusAPI(project) {
+      fetch(
+        `./api/status/${project}`,
+        {
+          credentials: 'same-origin',
+        }
+      ).then((response) => {
+        return response.json();
+      }).then((status) => {
+        this.set({status});
+      }).catch((error) => {
+        this.set({message: error.message});
+      });
+    },
   },
   components: {
     Lock,
