@@ -11,6 +11,7 @@ import (
 
 	"github.com/edvakf/go-pploy/models"
 	"github.com/edvakf/go-pploy/models/headreader"
+	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/workdir"
 	"github.com/edvakf/go-pploy/unbuffered"
@@ -88,7 +89,7 @@ func (p *Project) Checkout(commit string) (io.Reader, error) {
 	cmd.Dir = workdir.ProjectDir(p.Name)
 	cmd.Env = append(cmd.Env, "DEPLOY_COMMIT="+commit)
 
-	return streamStdout(cmd)
+	return stdoutReader(cmd, nil)
 }
 
 // Deploy runs project's deploy script
@@ -99,16 +100,43 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	cmd.Env = append(cmd.Env, "DEPLOY_ENV="+env)
 	cmd.Env = append(cmd.Env, "DEPLOY_USER="+user)
 
-	r, err := streamStdout(cmd)
-	if err != nil {
-		return nil, err
-	}
 	// write to log file
 	f, err := os.OpenFile(workdir.LogFile(p.Name), os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
+		return nil, errors.Wrap(err, "failed to open log file")
+	}
+	callback := func() {
+		f.Close()
+		hook.Deployed(p.Name, user, env)
+	}
+	r, err := stdoutReader(cmd, callback)
+	if err != nil {
+		f.Close()
 		return nil, err
 	}
-	return io.TeeReader(r, f), nil
+
+	r2 := io.TeeReader(r, f)
+	return r2, nil
+	// return stdoutReader(cmd, callback)
+}
+
+func stdoutReader(cmd *exec.Cmd, callback func()) (io.Reader, error) {
+	// StdoutPipe returns a ReadCloser, but it's not meant to be Close()'ed by users
+	out, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to run command")
+	}
+	err = cmd.Start()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to run command")
+	}
+	go func() {
+		cmd.Wait()
+		if callback != nil {
+			callback()
+		}
+	}()
+	return out, nil
 }
 
 // ReadReadme reads readme.html file from the project directory
@@ -180,20 +208,6 @@ func checkoutCommand() *exec.Cmd {
 	}, " && ")
 
 	return unbuffered.Command("bash -x -c '" + script + "'")
-}
-
-func streamStdout(cmd *exec.Cmd) (io.Reader, error) {
-	out, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to run command")
-	}
-	err = cmd.Start()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to run command")
-	}
-	go cmd.Wait()
-
-	return out, nil
 }
 
 func fileExists(filename string) bool {

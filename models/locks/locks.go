@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/edvakf/go-pploy/models"
+	"github.com/edvakf/go-pploy/models/hook"
 )
 
 type lock models.Lock
@@ -50,6 +51,7 @@ func Gain(project string, user string, now time.Time) (*models.Lock, error) {
 	}
 	l = lock{User: user, EndTime: now.Add(lockDuration)}
 	locks[project] = l
+	hook.LockGained(project, user)
 	return (*models.Lock)(&l), nil
 }
 
@@ -66,6 +68,7 @@ func Extend(project string, user string, now time.Time) (*models.Lock, error) {
 	// l.EndTime = l.EndTime.Add(lockDuration)
 	l = lock{User: user, EndTime: l.EndTime.Add(lockDuration)}
 	locks[project] = l
+	hook.LockExtended(project, user)
 	return (*models.Lock)(&l), nil
 }
 
@@ -80,6 +83,7 @@ func Release(project string, user string, now time.Time) error {
 		return errors.New("user does not have lock for the project")
 	}
 	delete(locks, project)
+	hook.LockReleased(project, user)
 	return nil
 }
 

@@ -41,6 +41,18 @@
   version = "v1.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hnakamur/slack-incoming-webhook"
+  packages = ["."]
+  revision = "0d4239e220a8f413ec431f1e3070be12b666787a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jessevdk/go-assets"
+  packages = ["."]
+  revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
+
+[[projects]]
   name = "github.com/labstack/echo"
   packages = [
     ".",
@@ -120,6 +132,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "12f0601562094ccf84213d2c94bd5b2008779422661df195ca9411ccb63ea4c6"
+  inputs-digest = "9cf0b77211d15981405bf5700174413dbc02cba8c000ec51814f4875eb96761c"
   solver-name = "gps-cdcl"
   solver-version = 1

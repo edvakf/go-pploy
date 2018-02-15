@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/edvakf/go-pploy/models/gitutil"
+	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/project"
 	"github.com/edvakf/go-pploy/models/workdir"
@@ -30,18 +31,17 @@ func getIndex(c echo.Context) error {
 
 func getStatusAPI(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+	if err == nil {
+		err = p.ReadReadme()
+		if err != nil {
+			return err
+		}
+		err = p.ReadDeployEnvs()
+		if err != nil {
+			return err
+		}
+		p.Lock = locks.Check(p.Name, time.Now())
 	}
-	err = p.ReadReadme()
-	if err != nil {
-		return err
-	}
-	err = p.ReadDeployEnvs()
-	if err != nil {
-		return err
-	}
-	p.Lock = locks.Check(p.Name, time.Now())
 
 	all, err := project.All()
 	if err != nil {
@@ -133,7 +133,7 @@ func postDeploy(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "user not provided")
 	}
 
-	env := c.FormValue("env")
+	env := c.FormValue("target")
 
 	r, err := p.Deploy(env, *user)
 	if err != nil {
@@ -241,11 +241,19 @@ func main() {
 func init() {
 	var lockDuration time.Duration
 	var workDir string
+	var sc hook.SlackConfig
 
 	flag.StringVar(&SessionSecret, "secret", "session-secret", "A very secret string for the cookie session store")
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
 	flag.StringVar(&workDir, "workdir", "", "Working directory")
 	flag.StringVar(&PathPrefix, "prefix", "/", "Path prefix of the app (eg. /pploy/), useful for proxied apps")
+
+	flag.StringVar(&sc.WebHookURL, "webhook", "", "Incoming web hook URL for slack notification")
+	flag.StringVar(&sc.LockGainedMessage, "lockgained", "", "Message template for when lock is gained")
+	flag.StringVar(&sc.LockReleasedMessage, "lockreleased", "", "Message template for when lock is released")
+	flag.StringVar(&sc.LockExtendedMessage, "lockextended", "", "Message template for when lock is extended")
+	flag.StringVar(&sc.DeployedMessage, "deployed", "", "Message template for when deploy is ended")
+
 	flag.Parse()
 
 	if workDir == "" {
@@ -254,4 +262,6 @@ func init() {
 
 	locks.SetDuration(lockDuration)
 	workdir.Init(workDir)
+
+	hook.SetSlackConfig(sc)
 }
