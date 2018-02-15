@@ -157,17 +157,18 @@ func (p *Project) ReadReadme() error {
 // ReadDeployEnvs reads deploy_envs file from the project directory
 func (p *Project) ReadDeployEnvs() error {
 	envsFile := workdir.ProjectDir(p.Name) + "/.deploy/config/deploy_envs"
+	envs := []string{"production"} // default
 	if fileExists(envsFile) {
 		b, err := ioutil.ReadFile(envsFile)
 		if err != nil {
 			return errors.Wrap(err, "wailed reading file") // TODO: should panic?
 		}
-		envs := removeEmpty(strings.Split(string(b), "\n"))
-		if len(envs) == 0 {
-			envs = []string{"production"} // default
+		envs2 := removeEmpty(strings.Split(string(b), "\n"))
+		if len(envs2) != 0 {
+			envs = envs2
 		}
-		p.DeployEnvs = envs
 	}
+	p.DeployEnvs = envs
 
 	return nil
 }
