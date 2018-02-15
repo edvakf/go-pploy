@@ -124,14 +124,26 @@
   revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [[projects]]
+  name = "gopkg.in/asn1-ber.v1"
+  packages = ["."]
+  revision = "379148ca0225df7a432012b8df0355c2a2063ac0"
+  version = "v1.2"
+
+[[projects]]
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
   revision = "3620d3c0694119b61c72071ff5a05a976e97b05a"
   version = "v9.9.4"
 
+[[projects]]
+  name = "gopkg.in/ldap.v2"
+  packages = ["."]
+  revision = "bb7a9ca6e4fbc2129e3db588a34bc970ffe811a9"
+  version = "v2.5.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9cf0b77211d15981405bf5700174413dbc02cba8c000ec51814f4875eb96761c"
+  inputs-digest = "5def759210eeac3acbeb09edecc259dd6a9cf33a1e18780ddd41f404a6378d8d"
   solver-name = "gps-cdcl"
   solver-version = 1

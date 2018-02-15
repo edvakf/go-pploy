@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"flag"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/edvakf/go-pploy/models/gitutil"
 	"github.com/edvakf/go-pploy/models/hook"
+	"github.com/edvakf/go-pploy/models/ldapusers"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/project"
 	"github.com/edvakf/go-pploy/models/workdir"
@@ -48,10 +50,15 @@ func getStatusAPI(c echo.Context) error {
 		return err
 	}
 
+	users := ldapusers.All()
+	if len(users) == 0 {
+		users = []string{"foo", "bar"}
+	}
+
 	return c.JSON(http.StatusOK, Status{
 		AllProjects:    all,
 		CurrentProject: p,
-		AllUsers:       []string{"foo", "bar"},
+		AllUsers:       users,
 		CurrentUser:    getCurrentUser(c),
 	})
 }
@@ -242,6 +249,7 @@ func init() {
 	var lockDuration time.Duration
 	var workDir string
 	var sc hook.SlackConfig
+	var lc ldapusers.Config
 
 	flag.StringVar(&SessionSecret, "secret", "session-secret", "A very secret string for the cookie session store")
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
@@ -254,14 +262,19 @@ func init() {
 	flag.StringVar(&sc.LockExtendedMessage, "lockextended", "", "Message template for when lock is extended")
 	flag.StringVar(&sc.DeployedMessage, "deployed", "", "Message template for when deploy is ended")
 
+	flag.StringVar(&lc.Host, "ldaphost", "", "LDAP host (leave empty if ldap is not needed)")
+	flag.IntVar(&lc.Port, "ldapport", 389, "LDAP port")
+	flag.StringVar(&lc.BaseDN, "ldapdn", "", "LDAP base DN of user list")
+	flag.DurationVar(&lc.CacheTTL, "ldapttl", 10*time.Minute, "LDAP cache TTL")
+
 	flag.Parse()
 
 	if workDir == "" {
-		panic("Please set workdir flag")
+		log.Fatalf("Please set workdir flag")
 	}
 
 	locks.SetDuration(lockDuration)
 	workdir.Init(workDir)
-
 	hook.SetSlackConfig(sc)
+	ldapusers.SetConfig(lc)
 }
