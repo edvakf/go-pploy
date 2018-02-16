@@ -57,6 +57,24 @@ func FromName(name string) (*Project, error) {
 	return &Project{Name: name}, nil
 }
 
+func Full(name string) (*Project, error) {
+	p, err := FromName(name)
+	if err != nil {
+		return nil, err
+	}
+	err = p.ReadReadme()
+	if err != nil {
+		return nil, err
+	}
+	err = p.ReadDeployEnvs()
+	if err != nil {
+		return nil, err
+	}
+	p.Lock = locks.Check(p.Name, time.Now())
+
+	return p, nil
+}
+
 // Clone runs `git clone` for project repo
 func Clone(url string) (*Project, error) {
 	cmd := exec.Command("git", "clone", url)

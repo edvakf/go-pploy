@@ -27,18 +27,7 @@ func getIndex(c echo.Context) error {
 }
 
 func getStatusAPI(c echo.Context) error {
-	p, err := project.FromName(c.Param("project"))
-	if err == nil {
-		err = p.ReadReadme()
-		if err != nil {
-			return err
-		}
-		err = p.ReadDeployEnvs()
-		if err != nil {
-			return err
-		}
-		p.Lock = locks.Check(p.Name, time.Now())
-	}
+	p, err := project.Full(c.Param("project"))
 
 	all, err := project.All()
 	if err != nil {
