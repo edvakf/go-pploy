@@ -256,6 +256,5 @@ func Server() {
 	e.GET("/api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう
-	// e.Static("/public", "/Users/atsushi/go/src/github.com/edvakf/go-pploy/public")
 	e.Logger.Fatal(e.Start(":1323"))
 }
