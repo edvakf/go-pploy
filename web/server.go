@@ -75,8 +75,15 @@ func getCurrentUser(c echo.Context) *string {
 }
 
 func createProject(c echo.Context) error {
-	url := c.FormValue("url")
-	p, err := project.Clone(url)
+	form := new(struct {
+		URL string `form:"url" validate:"required"`
+	})
+	err := validateForm(c, form)
+	if err != nil {
+		return err
+	}
+
+	p, err := project.Clone(form.URL)
 	if err != nil {
 		return err // TODO: flashつけてトップにリダイレクト
 	}
@@ -106,9 +113,15 @@ func postCheckout(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	ref := c.FormValue("ref")
+	form := new(struct {
+		Ref string `form:"ref" validate:"required"`
+	})
+	err = validateForm(c, form)
+	if err != nil {
+		return err
+	}
 
-	r, err := p.Checkout(ref)
+	r, err := p.Checkout(form.Ref)
 	if err != nil {
 		return err
 	}
@@ -127,9 +140,15 @@ func postDeploy(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "user not provided")
 	}
 
-	env := c.FormValue("target")
+	form := new(struct {
+		Target string `form:"target" validate:"required"`
+	})
+	err = validateForm(c, form)
+	if err != nil {
+		return err
+	}
 
-	r, err := p.Deploy(env, *user)
+	r, err := p.Deploy(form.Target, *user)
 	if err != nil {
 		return err
 	}
@@ -170,29 +189,27 @@ func postLock(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	lf := new(struct {
+	form := new(struct {
 		User      string `form:"user" validate:"required"`
 		Operation string `form:"operation" validate:"required,eq=gain|eq=release|eq=extend"`
 	})
-	if err := c.Bind(lf); err != nil {
-		return err // TODO: 処理
-	}
-	if err := c.Validate(lf); err != nil {
-		return err // TODO: 処理
+	err = validateForm(c, form)
+	if err != nil {
+		return err
 	}
 
-	if lf.Operation == "gain" {
-		_, err := locks.Gain(p.Name, lf.User, time.Now())
+	if form.Operation == "gain" {
+		_, err := locks.Gain(p.Name, form.User, time.Now())
 		if err != nil {
 			return err
 		}
-	} else if lf.Operation == "release" {
-		err := locks.Release(p.Name, lf.User, time.Now())
+	} else if form.Operation == "release" {
+		err := locks.Release(p.Name, form.User, time.Now())
 		if err != nil {
 			return err
 		}
-	} else if lf.Operation == "extend" {
-		_, err := locks.Extend(p.Name, lf.User, time.Now())
+	} else if form.Operation == "extend" {
+		_, err := locks.Extend(p.Name, form.User, time.Now())
 		if err != nil {
 			return err
 		}
@@ -200,9 +217,19 @@ func postLock(c echo.Context) error {
 		panic("should not reach here")
 	}
 
-	WriteUserCookie(c, lf.User)
+	WriteUserCookie(c, form.User)
 
 	return c.Redirect(http.StatusFound, PathPrefix+p.Name)
+}
+
+func validateForm(c echo.Context, form interface{}) error {
+	if err := c.Bind(form); err != nil {
+		return err
+	}
+	if err := c.Validate(form); err != nil {
+		return err
+	}
+	return nil
 }
 
 var PathPrefix string
