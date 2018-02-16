@@ -27,7 +27,7 @@ func getIndex(c echo.Context) error {
 }
 
 func getStatusAPI(c echo.Context) error {
-	p, err := project.Full(c.Param("project"))
+	p, _ := project.Full(c.Param("project"))
 
 	all, err := project.All()
 	if err != nil {
