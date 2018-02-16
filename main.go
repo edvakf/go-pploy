@@ -184,7 +184,10 @@ func postLock(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	lf := new(LockForm)
+	lf := new(struct {
+		User      string `form:"user" validate:"required"`
+		Operation string `form:"operation" validate:"required,eq=gain|eq=release|eq=extend"`
+	})
 	if err := c.Bind(lf); err != nil {
 		return err // TODO: 処理
 	}
