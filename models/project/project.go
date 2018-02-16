@@ -57,16 +57,17 @@ func FromName(name string) (*Project, error) {
 	return &Project{Name: name}, nil
 }
 
+// Full creates a Project from its name and populates properties
 func Full(name string) (*Project, error) {
 	p, err := FromName(name)
 	if err != nil {
 		return nil, err
 	}
-	err = p.ReadReadme()
+	err = p.readReadme()
 	if err != nil {
 		return nil, err
 	}
-	err = p.ReadDeployEnvs()
+	err = p.readDeployEnvs()
 	if err != nil {
 		return nil, err
 	}
@@ -157,8 +158,7 @@ func stdoutReader(cmd *exec.Cmd, callback func()) (io.Reader, error) {
 	return out, nil
 }
 
-// ReadReadme reads readme.html file from the project directory
-func (p *Project) ReadReadme() error {
+func (p *Project) readReadme() error {
 	readmeFile := workdir.ProjectDir(p.Name) + "/.deploy/config/readme.html"
 	if fileExists(readmeFile) {
 		b, err := ioutil.ReadFile(readmeFile)
@@ -172,8 +172,7 @@ func (p *Project) ReadReadme() error {
 	return nil
 }
 
-// ReadDeployEnvs reads deploy_envs file from the project directory
-func (p *Project) ReadDeployEnvs() error {
+func (p *Project) readDeployEnvs() error {
 	envsFile := workdir.ProjectDir(p.Name) + "/.deploy/config/deploy_envs"
 	envs := []string{"production"} // default
 	if fileExists(envsFile) {
