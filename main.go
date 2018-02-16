@@ -53,7 +53,12 @@ func getStatusAPI(c echo.Context) error {
 		users = []string{"foo", "bar"} // default value...
 	}
 
-	return c.JSON(http.StatusOK, Status{
+	return c.JSON(http.StatusOK, struct {
+		AllProjects    []project.Project `json:"allProjects"`
+		CurrentProject *project.Project  `json:"currentProject"`
+		AllUsers       []string          `json:"allUsers"`
+		CurrentUser    *string           `json:"currentUser"`
+	}{
 		AllProjects:    all,
 		CurrentProject: p,
 		AllUsers:       users,
