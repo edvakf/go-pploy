@@ -56,3 +56,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/hnakamur/slack-incoming-webhook"
+
+[[constraint]]
+  name = "github.com/fukata/golang-stats-api-handler"
+  version = "1.0.0"

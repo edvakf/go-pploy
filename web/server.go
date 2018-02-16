@@ -12,6 +12,7 @@ import (
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/project"
 	"github.com/edvakf/go-pploy/models/workdir"
+	"github.com/fukata/golang-stats-api-handler"
 	"github.com/labstack/echo"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -252,6 +253,7 @@ func Server() {
 	e.GET("/:project/checkout", postCheckout)
 	e.POST("/:project/deploy", postDeploy)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
+	e.GET("/api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう
 	// e.Static("/public", "/Users/atsushi/go/src/github.com/edvakf/go-pploy/public")

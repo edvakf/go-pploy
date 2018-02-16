@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/fukata/golang-stats-api-handler"
+  packages = ["."]
+  revision = "90f0b59102629831cc109845475a8d77043412ec"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/go-playground/locales"
   packages = [
     ".",
@@ -109,6 +115,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "07646152255f8ed08023032483da341a69c5e702741170219856a5c4d4e36316"
+  inputs-digest = "13a4c138d03d42ffc31f61527e820bbfdd8a373a8449887931ec61b31f184147"
   solver-name = "gps-cdcl"
   solver-version = 1
