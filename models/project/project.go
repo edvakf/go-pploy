@@ -39,7 +39,7 @@ func All() ([]Project, error) {
 		if err != nil {
 			continue // should not happen
 		}
-		locks.Check(name, now)
+		p.Lock = locks.Check(name, now)
 		projects = append(projects, *p)
 	}
 	return projects, nil
