@@ -14,7 +14,6 @@ import (
 	"github.com/edvakf/go-pploy/models/workdir"
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/labstack/echo"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 func getIndex(c echo.Context) error {
@@ -168,14 +167,6 @@ func transferEncodingChunked(c echo.Context, r io.Reader) error {
 	return nil
 }
 
-type CustomValidator struct {
-	validator *validator.Validate
-}
-
-func (cv *CustomValidator) Validate(i interface{}) error {
-	return cv.validator.Struct(i)
-}
-
 func postLock(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
@@ -233,7 +224,7 @@ func Server() {
 	// 	"/*": "/assets/index.html",
 	// }))
 
-	e.Validator = &CustomValidator{validator: validator.New()}
+	e.Validator = &Validator
 
 	e.POST("/_create", createProject)
 	e.GET("/api/status/", getStatusAPI)
