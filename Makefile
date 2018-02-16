@@ -1,6 +1,8 @@
+hash := $(shell git rev-parse --verify HEAD)
+
 # `make` builds pploy
 pploy: vendor main.go $(wildcard web/*.go) web/assets.go
-	go build -o pploy .
+	go build -o pploy -ldflags "-X main.hash=${hash}"
 
 # please run `make prepare` before first build
 prepare: node_modules vendor go-assets-builder

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"time"
 
@@ -12,7 +13,12 @@ import (
 	"github.com/edvakf/go-pploy/web"
 )
 
+var hash string
+
 func main() {
+	// commit hash is passed at build time with -ldflags
+	fmt.Printf("pploy version: %s\n", hash)
+
 	web.Server()
 }
 
