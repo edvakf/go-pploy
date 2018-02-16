@@ -23,7 +23,7 @@ type Project struct {
 	Lock       *models.Lock `json:"lock"`
 	Name       string       `json:"name"`
 	DeployEnvs []string     `json:"deployEnvs"`
-	Readme     *string      `json:"readme"`
+	Readme     string       `json:"readme"`
 }
 
 // All returns all projects
@@ -166,7 +166,7 @@ func (p *Project) readReadme() error {
 			return errors.Wrap(err, "wailed reading file") // TODO: should panic?
 		}
 		readme := string(b)
-		p.Readme = &readme
+		p.Readme = readme
 	}
 
 	return nil
