@@ -1,5 +1,5 @@
 /vendor
-/assets.go
+/web/assets.go
 /assets/components/*
 !/assets/components/.keep
 /assets/bootstrap/*

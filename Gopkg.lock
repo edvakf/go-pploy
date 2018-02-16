@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/dgrijalva/jwt-go"
-  packages = ["."]
-  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
-  version = "v3.1.0"
-
-[[projects]]
   name = "github.com/go-playground/locales"
   packages = [
     ".",
@@ -23,24 +17,6 @@
   version = "v0.16.0"
 
 [[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/securecookie"
-  packages = ["."]
-  revision = "667fe4e3466a040b780561fe9b51a83a3753eefc"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/sessions"
-  packages = ["."]
-  revision = "ca9ada44574153444b00d3fd9c8559e4cc95f896"
-  version = "v1.1"
-
-[[projects]]
   branch = "master"
   name = "github.com/hnakamur/slack-incoming-webhook"
   packages = ["."]
@@ -54,26 +30,15 @@
 
 [[projects]]
   name = "github.com/labstack/echo"
-  packages = [
-    ".",
-    "middleware"
-  ]
+  packages = ["."]
   revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
   version = "3.2.6"
 
 [[projects]]
-  name = "github.com/labstack/echo-contrib"
-  packages = ["session"]
-  revision = "05b673bd85c645d769ea2d10e933f3fa1ee1acfa"
-  version = "0.4.1"
-
-[[projects]]
   name = "github.com/labstack/gommon"
   packages = [
-    "bytes",
     "color",
-    "log",
-    "random"
+    "log"
   ]
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
@@ -144,6 +109,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5def759210eeac3acbeb09edecc259dd6a9cf33a1e18780ddd41f404a6378d8d"
+  inputs-digest = "07646152255f8ed08023032483da341a69c5e702741170219856a5c4d4e36316"
   solver-name = "gps-cdcl"
   solver-version = 1
