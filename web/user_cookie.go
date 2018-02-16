@@ -25,3 +25,11 @@ func ReadUserCookie(c echo.Context) string {
 	}
 	return cookie.Value
 }
+
+func currentUser(c echo.Context) *string {
+	u := ReadUserCookie(c)
+	if u == "" {
+		return nil
+	}
+	return &u
+}

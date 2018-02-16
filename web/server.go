@@ -49,7 +49,7 @@ func getStatusAPI(c echo.Context) error {
 		AllProjects:    all,
 		CurrentProject: p,
 		AllUsers:       users,
-		CurrentUser:    getCurrentUser(c),
+		CurrentUser:    currentUser(c),
 	})
 }
 
@@ -65,14 +65,6 @@ func getCommitsAPI(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, commits)
-}
-
-func getCurrentUser(c echo.Context) *string {
-	u := ReadUserCookie(c)
-	if u == "" {
-		return nil
-	}
-	return &u
 }
 
 func createProject(c echo.Context) error {
@@ -136,7 +128,7 @@ func postDeploy(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, "project not found")
 	}
 
-	user := getCurrentUser(c)
+	user := currentUser(c)
 	if user == nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "user not provided")
 	}
