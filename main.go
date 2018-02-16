@@ -15,9 +15,7 @@ import (
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/project"
 	"github.com/edvakf/go-pploy/models/workdir"
-	"github.com/gorilla/sessions"
 	"github.com/labstack/echo"
-	"github.com/labstack/echo-contrib/session"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
@@ -52,7 +50,7 @@ func getStatusAPI(c echo.Context) error {
 
 	users := ldapusers.All()
 	if len(users) == 0 {
-		users = []string{"foo", "bar"}
+		users = []string{"foo", "bar"} // default value...
 	}
 
 	return c.JSON(http.StatusOK, Status{
@@ -78,13 +76,11 @@ func getCommitsAPI(c echo.Context) error {
 }
 
 func getCurrentUser(c echo.Context) *string {
-	sess, _ := session.Get("session", c)
-	// sess.Values["user"] = "bar"
-	// sess.Save(c.Request(), c.Response())
-	if u, ok := sess.Values["user"].(string); ok {
-		return &u
+	u := ReadUserCookie(c)
+	if u == "" {
+		return nil
 	}
-	return nil
+	return &u
 }
 
 func createProject(c echo.Context) error {
@@ -210,14 +206,11 @@ func postLock(c echo.Context) error {
 		panic("should not reach here")
 	}
 
-	sess, _ := session.Get("session", c)
-	sess.Values["user"] = lf.User
-	sess.Save(c.Request(), c.Response())
+	WriteUserCookie(c, lf.User)
 
 	return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 }
 
-var SessionSecret string
 var PathPrefix string
 
 func main() {
@@ -225,7 +218,6 @@ func main() {
 	// e.Use(middleware.Rewrite(map[string]string{
 	// 	"/*": "/assets/index.html",
 	// }))
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte(SessionSecret))))
 
 	e.Validator = &CustomValidator{validator: validator.New()}
 
@@ -251,7 +243,6 @@ func init() {
 	var sc hook.SlackConfig
 	var lc ldapusers.Config
 
-	flag.StringVar(&SessionSecret, "secret", "session-secret", "A very secret string for the cookie session store")
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
 	flag.StringVar(&workDir, "workdir", "", "Working directory")
 	flag.StringVar(&PathPrefix, "prefix", "/", "Path prefix of the app (eg. /pploy/), useful for proxied apps")
