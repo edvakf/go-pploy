@@ -233,7 +233,6 @@ func Server() {
 	e.POST("/:project/lock", postLock)
 	e.GET("/:project/logs", getLogs)
 	e.POST("/:project/checkout", postCheckout)
-	e.GET("/:project/checkout", postCheckout)
 	e.POST("/:project/deploy", postDeploy)
 	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
 	e.GET("/api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
