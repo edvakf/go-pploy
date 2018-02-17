@@ -33,7 +33,7 @@ func All() []string {
 		return users
 	}
 	if time.Now().After(nextUpdate) {
-		u, err := reload()
+		u, err := fetch(config.Host, config.Port, config.BaseDN)
 		if err != nil {
 			// deliberately miss error
 			log.Println(err)
@@ -45,15 +45,15 @@ func All() []string {
 	return users
 }
 
-func reload() ([]string, error) {
-	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", config.Host, config.Port))
+func fetch(host string, port int, baseDN string) ([]string, error) {
+	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		return nil, err
 	}
 	defer l.Close()
 
 	searchRequest := ldap.NewSearchRequest(
-		config.BaseDN, // The base dn to search
+		baseDN, // The base dn to search
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
 		"(cn=*)",       // The filter to apply
 		[]string{"cn"}, // A list attributes to retrieve
