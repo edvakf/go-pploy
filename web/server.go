@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/edvakf/go-pploy/models/gitutil"
@@ -26,12 +25,21 @@ func getIndex(c echo.Context) error {
 	return c.Stream(http.StatusOK, "text/html", f)
 }
 
+func messageJSON(c echo.Context, message string) error {
+	return c.JSON(http.StatusOK, struct { // 500?
+		Message string `json:"message"`
+	}{
+		Message: message,
+	})
+}
+
 func getStatusAPI(c echo.Context) error {
+	// p is nil when project not found
 	p, _ := project.Full(c.Param("project"))
 
 	all, err := project.All()
 	if err != nil {
-		return err
+		return messageJSON(c, err.Error())
 	}
 
 	users := ldapusers.All()
@@ -40,11 +48,13 @@ func getStatusAPI(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, struct {
+		Message        string            `json:"message"`
 		AllProjects    []project.Project `json:"allProjects"`
 		CurrentProject *project.Project  `json:"currentProject"`
 		AllUsers       []string          `json:"allUsers"`
 		CurrentUser    *string           `json:"currentUser"`
 	}{
+		Message:        ReadFlashCookie(c),
 		AllProjects:    all,
 		CurrentProject: p,
 		AllUsers:       users,
@@ -55,12 +65,12 @@ func getStatusAPI(c echo.Context) error {
 func getCommitsAPI(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+		return messageJSON(c, err.Error())
 	}
 
 	commits, err := gitutil.RecentCommits(workdir.ProjectDir(p.Name))
 	if err != nil {
-		return err // TODO
+		return messageJSON(c, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, commits)
@@ -72,27 +82,27 @@ func createProject(c echo.Context) error {
 	})
 	err := validateForm(c, form)
 	if err != nil {
-		return err
+		WriteFlashCookie(c, err.Error())
+		return c.Redirect(http.StatusFound, PathPrefix)
 	}
 
 	p, err := project.Clone(form.URL)
 	if err != nil {
-		return err // TODO: flashつけてトップにリダイレクト
+		WriteFlashCookie(c, err.Error())
+		return c.Redirect(http.StatusFound, PathPrefix)
 	}
+
 	return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 }
 
 func getLogs(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	r, err := p.LogReader(c.QueryParam("full") == "1")
 	if err != nil {
-		if os.IsNotExist(err) {
-			return c.NoContent(http.StatusOK)
-		}
 		return err
 	}
 	defer r.Close()
@@ -102,7 +112,7 @@ func getLogs(c echo.Context) error {
 func postCheckout(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	form := new(struct {
@@ -110,12 +120,12 @@ func postCheckout(c echo.Context) error {
 	})
 	err = validateForm(c, form)
 	if err != nil {
-		return err
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	r, err := p.Checkout(form.Ref)
 	if err != nil {
-		return err
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	return transferEncodingChunked(c, r)
@@ -124,12 +134,12 @@ func postCheckout(c echo.Context) error {
 func postDeploy(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	user := currentUser(c)
 	if user == nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "user not provided")
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	form := new(struct {
@@ -137,12 +147,12 @@ func postDeploy(c echo.Context) error {
 	})
 	err = validateForm(c, form)
 	if err != nil {
-		return err
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	r, err := p.Deploy(form.Target, *user)
 	if err != nil {
-		return err
+		return c.String(http.StatusOK, err.Error())
 	}
 
 	return transferEncodingChunked(c, r)
@@ -170,7 +180,8 @@ func transferEncodingChunked(c echo.Context, r io.Reader) error {
 func postLock(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, "project not found")
+		WriteFlashCookie(c, err.Error())
+		return c.Redirect(http.StatusFound, PathPrefix)
 	}
 
 	form := new(struct {
@@ -179,23 +190,27 @@ func postLock(c echo.Context) error {
 	})
 	err = validateForm(c, form)
 	if err != nil {
-		return err
+		WriteFlashCookie(c, err.Error())
+		return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 	}
 
 	if form.Operation == "gain" {
 		_, err := locks.Gain(p.Name, form.User, time.Now())
 		if err != nil {
-			return err
+			WriteFlashCookie(c, err.Error())
+			return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 		}
 	} else if form.Operation == "release" {
 		err := locks.Release(p.Name, form.User, time.Now())
 		if err != nil {
-			return err
+			WriteFlashCookie(c, err.Error())
+			return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 		}
 	} else if form.Operation == "extend" {
 		_, err := locks.Extend(p.Name, form.User, time.Now())
 		if err != nil {
-			return err
+			WriteFlashCookie(c, err.Error())
+			return c.Redirect(http.StatusFound, PathPrefix+p.Name)
 		}
 	} else {
 		panic("should not reach here")

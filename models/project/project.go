@@ -196,12 +196,25 @@ func (p *Project) LogReader(full bool) (io.ReadCloser, error) {
 	logFile := workdir.LogFile(p.Name)
 	f, err := os.Open(logFile)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return &EmptyReadCloser{}, nil
+		}
 		return nil, err
 	}
 	if full {
 		return f, nil
 	}
 	return headreader.New(f, 10000), nil // first 10000 bytes
+}
+
+type EmptyReadCloser struct{}
+
+func (b *EmptyReadCloser) Read([]byte) (int, error) {
+	return 0, io.EOF
+}
+
+func (b *EmptyReadCloser) Close() error {
+	return nil
 }
 
 func removeEmpty(a []string) (r []string) {

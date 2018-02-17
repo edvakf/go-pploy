@@ -34,7 +34,7 @@ func ProjectsDir() string {
 // LogsDir returns the directory for deploy logs
 func LogsDir() string {
 	assetInitialized()
-	return workDir + "/projects"
+	return workDir + "/logs"
 }
 
 // ProjectDir returns the git repo directory for of a project

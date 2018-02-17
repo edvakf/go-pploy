@@ -61,6 +61,9 @@ export default {
       ).then((response) => {
         return response.json();
       }).then((status) => {
+        if (status.message !== "") {
+          iziToast.error({message: status.message, position: 'topRight'});
+        }
         this.set({status});
       }).catch((error) => {
         console.log(error);
