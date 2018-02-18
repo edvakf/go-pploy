@@ -162,7 +162,7 @@ func (p *Project) readReadme() error {
 	if fileExists(readmeFile) {
 		b, err := ioutil.ReadFile(readmeFile)
 		if err != nil {
-			return errors.Wrap(err, "wailed reading file") // TODO: should panic?
+			return errors.Wrap(err, "failed reading file") // TODO: should panic?
 		}
 		readme := string(b)
 		p.Readme = readme
@@ -177,7 +177,7 @@ func (p *Project) readDeployEnvs() error {
 	if fileExists(envsFile) {
 		b, err := ioutil.ReadFile(envsFile)
 		if err != nil {
-			return errors.Wrap(err, "wailed reading file") // TODO: should panic?
+			return errors.Wrap(err, "failed reading file") // TODO: should panic?
 		}
 		envs2 := removeEmpty(strings.Split(string(b), "\n"))
 		if len(envs2) != 0 {
