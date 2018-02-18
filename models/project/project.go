@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/edvakf/go-pploy/models"
 	"github.com/edvakf/go-pploy/models/headreader"
 	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/locks"
@@ -20,10 +19,10 @@ import (
 
 // Project is a git-controlled deployable project directory
 type Project struct {
-	Lock       *models.Lock `json:"lock"`
-	Name       string       `json:"name"`
-	DeployEnvs []string     `json:"deployEnvs"`
-	Readme     string       `json:"readme"`
+	Lock       *locks.Lock `json:"lock"`
+	Name       string      `json:"name"`
+	DeployEnvs []string    `json:"deployEnvs"`
+	Readme     string      `json:"readme"`
 }
 
 // All returns all projects
