@@ -4,10 +4,10 @@ hash := $(shell git rev-parse --verify HEAD)
 
 # `make` builds pploy
 pploy: vendor main.go $(wildcard web/*.go) web/assets.go
-	go build -ldflags "-X main.hash=${hash}"
+	go build -ldflags "-X main.GitCommit=${hash}"
 
 gox: vendor main.go $(wildcard web/*.go) web/assets.go
-	gox -os="linux darwin" -arch="amd64" -ldflags="-X main.hash=${hash}"
+	gox -os="darwin linux" -arch="amd64" -ldflags="-X main.GitCommit=${hash}"
 
 # please run `make prepare` before first build
 prepare: go-assets-builder dep vendor node_modules svelte
