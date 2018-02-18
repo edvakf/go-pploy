@@ -2,6 +2,7 @@ package web
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -232,6 +233,7 @@ func validateForm(c echo.Context, form interface{}) error {
 }
 
 var PathPrefix string
+var Port int
 
 func Server() {
 	e := echo.New()
@@ -250,5 +252,5 @@ func Server() {
 	e.GET("/api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
 	e.GET("/:project", getIndex) // rewrite middlewareでできそう
 	e.GET("/", getIndex)         // rewrite middlewareでできそう
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", Port)))
 }

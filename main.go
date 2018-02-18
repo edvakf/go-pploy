@@ -34,6 +34,7 @@ func init() {
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
 	flag.StringVar(&workDir, "workdir", "", "Working directory")
 	flag.StringVar(&web.PathPrefix, "prefix", "/", "Path prefix of the app (eg. /pploy/), useful for proxied apps")
+	flag.IntVar(&web.Port, "port", 9000, "HTTP port")
 
 	flag.StringVar(&sc.WebHookURL, "webhook", "", "Incoming web hook URL for slack notification")
 	flag.StringVar(&sc.LockGainedMessage, "lockgained", "", "Message template for when lock is gained")
