@@ -15,13 +15,13 @@ import (
 )
 
 func main() {
-	// commit hash is passed at build time with -ldflags
-	fmt.Printf("pploy version: %s (commit: %s)\n", Version, GitCommit)
-
 	web.Server()
 }
 
 func init() {
+	// commit hash is passed at build time with -ldflags
+	fmt.Printf("pploy version: %s (commit: %s)\n", Version, GitCommit)
+
 	var pidFile string
 	var lockDuration time.Duration
 	var workDir string
