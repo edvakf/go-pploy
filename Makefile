@@ -2,8 +2,8 @@ hash := $(shell git rev-parse --verify HEAD)
 
 .PHONY: test components bootstrap izitoast go-assets-builder svelte clean dep gox
 
-# `make` builds pploy
-pploy: vendor main.go $(wildcard web/*.go) web/assets.go
+# `make` builds go-pploy
+go-pploy: vendor main.go $(wildcard web/*.go) web/assets.go
 	go build -ldflags "-X main.GitCommit=${hash}"
 
 gox: vendor main.go $(wildcard web/*.go) web/assets.go
