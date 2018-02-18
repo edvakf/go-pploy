@@ -235,9 +235,6 @@ var PathPrefix string
 
 func Server() {
 	e := echo.New()
-	// e.Use(middleware.Rewrite(map[string]string{
-	// 	"/*": "/assets/index.html",
-	// }))
 
 	e.Validator = &Validator
 
