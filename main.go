@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/Wang/pid"
 	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/ldapusers"
 	"github.com/edvakf/go-pploy/models/locks"
@@ -23,11 +24,13 @@ func main() {
 }
 
 func init() {
+	var pidFile string
 	var lockDuration time.Duration
 	var workDir string
 	var sc hook.SlackConfig
 	var lc ldapusers.Config
 
+	flag.StringVar(&pidFile, "pidfile", "", "pid file path")
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
 	flag.StringVar(&workDir, "workdir", "", "Working directory")
 	flag.StringVar(&web.PathPrefix, "prefix", "/", "Path prefix of the app (eg. /pploy/), useful for proxied apps")
@@ -47,6 +50,14 @@ func init() {
 
 	if workDir == "" {
 		log.Fatalf("Please set workdir flag")
+	}
+
+	if pidFile != "" {
+		pidValue, err := pid.Create(pidFile)
+		if err != nil {
+			log.Fatalf("failed to create pid file:%s", err.Error())
+		}
+		fmt.Printf("pid:%d\n", pidValue)
 	}
 
 	locks.SetDuration(lockDuration)

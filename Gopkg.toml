@@ -60,3 +60,7 @@
 [[constraint]]
   name = "github.com/fukata/golang-stats-api-handler"
   version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/Wang/pid"
