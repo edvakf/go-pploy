@@ -1,0 +1,22 @@
+language: go
+go:
+  - 1.9
+env:
+  - "PATH=$PATH:$GOPATH/bin/path"
+before_install:
+  - make prepare
+  - go get github.com/mitchellh/gox
+  - go get github.com/tcnksm/ghr
+script:
+  - make test
+before_deploy:
+  - gox -os="linux darwin" -arch="amd64"
+deploy:
+  provider: releases
+  api_key:
+    secure: "xsVoVW1HFb8GtwlFJIywo0sGn6UwBVNdOTZfYULIkpkRPLJt4Uje7JeEuaVZXP40e8k0bp0OtHPMcfYnGMnF7wU3y343nAijM5UHykdF36/uR7c3cQs/nhl6klRYnfTCuJXvyzn/9cHyL89VEGPwbFZAM69Luojy6eDGvJlkWipE4cR1Dev/xVjtSm5lJbWgjXcMI6JyH0yczmX5R4G000VDHWLCN5Allqh8uCwzDStVNFocNttb1fAqwhsNE8UqklPb32nQ85TXz5att3IuqSKY2Otih793qTtLQMhQdf5StTN/sdbVEIHppgy4mhjm+qNiKCyrk27akUPk5dNg8Ok8QKDDESlShi7pJszhmlkq52wM7hQs39sghsn4bE9LuSR8uhKDxWbzMzQEnC5RRocdajtIQ7sZsl9y8iAKbPH2ldihwHoev7w6NJU+igvwNUb3GHlzx4fqH+PCOoHkhD2+T6FgL2sGfiIqWcs10t/tKt3w1Z5LWO+d6sVtKe12j4ww+oL80Qk8ott65id4kdpu9DoTr7nsLTYpIkSQ2apUHBUxQtn3uXGnPdyI9oDFSBD14+VFu4tKEoRSbpfWO2vP7wnE/0Ifdb7DcbwyrvGQ6+ToPnqkNYMIqmi8Qqc03/lGqmUD21D6Rr8i/SLfNZUi9GT1xbIERCU2fA/s6SI="
+  file_glob: true
+  file: go-pploy_*
+  skip_cleanup: true
+  on:
+    tags: true

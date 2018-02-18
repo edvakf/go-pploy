@@ -1,11 +1,16 @@
 hash := $(shell git rev-parse --verify HEAD)
 
+.PHONY: test components bootstrap izitoast go-assets-builder svelte clean dep
+
 # `make` builds pploy
 pploy: vendor main.go $(wildcard web/*.go) web/assets.go
-	go build -o pploy -ldflags "-X main.hash=${hash}"
+	go build -ldflags "-X main.hash=${hash}"
 
 # please run `make prepare` before first build
-prepare: node_modules vendor go-assets-builder
+prepare: go-assets-builder dep vendor node_modules svelte
+
+test: web/assets.go
+	go test -v ./...
 
 web/assets.go: $(wildcard assets/*) components bootstrap izitoast
 	go-assets-builder -p web assets/ > $@
@@ -27,6 +32,13 @@ vendor:
 
 go-assets-builder:
 	go get -u github.com/jessevdk/go-assets-builder
+
+dep:
+	go get -u github.com/golang/dep/cmd/dep
+
+# install `svelte` command
+svelte:
+	npm install -g svelte-cli
 
 clean:
 	rm web/assets.go
