@@ -1,10 +1,13 @@
 hash := $(shell git rev-parse --verify HEAD)
 
-.PHONY: test components bootstrap izitoast go-assets-builder svelte clean dep
+.PHONY: test components bootstrap izitoast go-assets-builder svelte clean dep gox
 
 # `make` builds pploy
 pploy: vendor main.go $(wildcard web/*.go) web/assets.go
 	go build -ldflags "-X main.hash=${hash}"
+
+gox: vendor main.go $(wildcard web/*.go) web/assets.go
+	gox -os="linux darwin" -arch="amd64" -ldflags="-X main.hash=${hash}"
 
 # please run `make prepare` before first build
 prepare: go-assets-builder dep vendor node_modules svelte

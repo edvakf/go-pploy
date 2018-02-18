@@ -9,7 +9,7 @@ before_install:
 script:
   - make test
 before_deploy:
-  - gox -os="linux darwin" -arch="amd64"
+  - make gox
 deploy:
   provider: releases
   api_key:
