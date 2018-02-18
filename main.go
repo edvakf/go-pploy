@@ -14,13 +14,15 @@ import (
 	"github.com/edvakf/go-pploy/web"
 )
 
+var GitCommit string
+
 func main() {
 	web.Server()
 }
 
 func init() {
 	// commit hash is passed at build time with -ldflags
-	fmt.Printf("pploy version: %s (commit: %s)\n", Version, GitCommit)
+	fmt.Printf("commit: %s\n", GitCommit)
 
 	var pidFile string
 	var lockDuration time.Duration
