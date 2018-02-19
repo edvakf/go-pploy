@@ -3,6 +3,24 @@
 [pploy](https://github.com/edvakf/pploy) is a deploy manager written in Scala.
 [go-pploy](https://github.com/edvakf/go-pploy) is it's port in golang.
 
+# Build
+
+```
+make prepare
+```
+
+installs dependencies. Some commands are installed globally.
+
+```
+make
+```
+
+builds into a single binary `go-pploy`. Frontend files are compiled with `go-assets-builder`.
+
+# CI
+
+When tagged, travis uploads binaries to GitHub Release.
+
 # Usage
 
 ```
