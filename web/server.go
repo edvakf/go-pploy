@@ -140,7 +140,7 @@ func postDeploy(c echo.Context) error {
 
 	user := currentUser(c)
 	if user == nil {
-		return c.String(http.StatusOK, err.Error())
+		return c.String(http.StatusOK, "user cookie not set")
 	}
 
 	form := new(struct {
