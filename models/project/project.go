@@ -77,7 +77,7 @@ func Full(name string) (*Project, error) {
 
 // Clone runs `git clone` for project repo
 func Clone(url string) (*Project, error) {
-	cmd := exec.Command("git", "clone", url)
+	cmd := exec.Command("git", "clone", url, "--depth", "20") // TODO: make it configurable
 	cmd.Dir = workdir.ProjectsDir()
 	err := cmd.Run()
 	if err != nil {
