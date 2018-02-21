@@ -240,17 +240,17 @@ func Server() {
 
 	e.Validator = &Validator
 
-	e.POST("/_create", createProject)
-	e.GET("/api/status/", getStatusAPI)
-	e.GET("/api/status/:project", getStatusAPI)
-	e.GET("/api/commits/:project", getCommitsAPI)
-	e.POST("/:project/lock", postLock)
-	e.GET("/:project/logs", getLogs)
-	e.POST("/:project/checkout", postCheckout)
-	e.POST("/:project/deploy", postDeploy)
-	e.GET("/assets/*", echo.WrapHandler(http.FileServer(Assets)))
-	e.GET("/api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
-	e.GET("/:project", getIndex) // rewrite middlewareでできそう
-	e.GET("/", getIndex)         // rewrite middlewareでできそう
+	e.POST(PathPrefix+"_create", createProject)
+	e.GET(PathPrefix+"api/status/", getStatusAPI)
+	e.GET(PathPrefix+"api/status/:project", getStatusAPI)
+	e.GET(PathPrefix+"api/commits/:project", getCommitsAPI)
+	e.POST(PathPrefix+":project/lock", postLock)
+	e.GET(PathPrefix+":project/logs", getLogs)
+	e.POST(PathPrefix+":project/checkout", postCheckout)
+	e.POST(PathPrefix+":project/deploy", postDeploy)
+	e.GET(PathPrefix+"assets/*", echo.WrapHandler(http.FileServer(Assets)))
+	e.GET(PathPrefix+"api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
+	e.GET(PathPrefix+":project", getIndex) // rewrite middlewareでできそう
+	e.GET(PathPrefix, getIndex)            // rewrite middlewareでできそう
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", Port)))
 }
