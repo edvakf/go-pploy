@@ -1,6 +1,7 @@
 package gitutil
 
 import (
+	"os"
 	"os/exec"
 	"strings"
 	"time"
@@ -36,6 +37,7 @@ func RecentCommits(dir string) ([]Commit, error) {
 		"--pretty=format:"+format,
 	)
 	cmd.Dir = dir
+	cmd.Env = os.Environ()
 	// err := cmd.Run()
 	out, err := cmd.Output()
 	if err != nil {

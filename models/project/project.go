@@ -105,6 +105,7 @@ func (p *Project) Checkout(commit string) (io.Reader, error) {
 		cmd = checkoutCommand()
 	}
 	cmd.Dir = workdir.ProjectDir(p.Name)
+	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "DEPLOY_COMMIT="+commit)
 
 	return stdoutReader(cmd, nil)
@@ -115,6 +116,7 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	script := workdir.ProjectDir(p.Name) + "/.deploy/bin/deploy"
 	cmd := unbuffered.Command(script)
 	cmd.Dir = workdir.ProjectDir(p.Name)
+	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "DEPLOY_ENV="+env)
 	cmd.Env = append(cmd.Env, "DEPLOY_USER="+user)
 
