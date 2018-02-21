@@ -101,14 +101,16 @@ export default {
       // set border to back to black
       this.refs.commandLogFrame.classList.remove('loading');
 
-      // TODO: this should only be done after checkout
       this.loadCommits();
 
       enableAllButtons();
     },
 
     loadCommits() {
-      new Commits({
+      if (this.commits) {
+        this.commits.destroy();
+      }
+      this.commits = new Commits({
         target: this.refs.commitLogFrame.contentDocument.querySelector('commits'),
         data: {
           project: this.get("status").currentProject,
