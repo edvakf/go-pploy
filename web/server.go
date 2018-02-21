@@ -248,7 +248,7 @@ func Server() {
 	e.GET(PathPrefix+":project/logs", getLogs)
 	e.POST(PathPrefix+":project/checkout", postCheckout)
 	e.POST(PathPrefix+":project/deploy", postDeploy)
-	e.GET(PathPrefix+"assets/*", echo.WrapHandler(http.FileServer(Assets)))
+	e.GET(PathPrefix+"assets/*", echo.WrapHandler(http.StripPrefix(PathPrefix, http.FileServer(Assets))))
 	e.GET(PathPrefix+"api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
 	e.GET(PathPrefix+":project", getIndex) // rewrite middlewareでできそう
 	e.GET(PathPrefix, getIndex)            // rewrite middlewareでできそう
