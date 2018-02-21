@@ -178,6 +178,15 @@ func transferEncodingChunked(c echo.Context, r io.Reader) error {
 	return nil
 }
 
+func redirectToProject(c echo.Context) error {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
+		WriteFlashCookie(c, err.Error())
+		return c.Redirect(http.StatusFound, PathPrefix)
+	}
+	return c.Redirect(http.StatusFound, PathPrefix+p.Name)
+}
+
 func postLock(c echo.Context) error {
 	p, err := project.FromName(c.Param("project"))
 	if err != nil {
@@ -245,6 +254,7 @@ func Server() {
 	e.GET(PathPrefix+"api/status/:project", getStatusAPI)
 	e.GET(PathPrefix+"api/commits/:project", getCommitsAPI)
 	e.POST(PathPrefix+":project/lock", postLock)
+	e.GET(PathPrefix+":project/lock", redirectToProject)
 	e.GET(PathPrefix+":project/logs", getLogs)
 	e.POST(PathPrefix+":project/checkout", postCheckout)
 	e.POST(PathPrefix+":project/deploy", postDeploy)
