@@ -175,7 +175,7 @@ func (p *Project) readReadme() error {
 
 func (p *Project) readDeployEnvs() error {
 	envsFile := workdir.ProjectDir(p.Name) + "/.deploy/config/deploy_envs"
-	envs := []string{"production"} // default
+	envs := []string{"staging", "production"} // default
 	if fileExists(envsFile) {
 		b, err := ioutil.ReadFile(envsFile)
 		if err != nil {
