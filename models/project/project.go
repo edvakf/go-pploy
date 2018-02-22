@@ -121,7 +121,7 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	cmd.Env = append(cmd.Env, "DEPLOY_USER="+user)
 
 	// write to log file
-	f, err := os.OpenFile(workdir.LogFile(p.Name), os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(workdir.LogFile(p.Name), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open log file")
 	}
