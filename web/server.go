@@ -159,6 +159,20 @@ func postDeploy(c echo.Context) error {
 	return transferEncodingChunked(c, r)
 }
 
+func postRemove(c echo.Context) error {
+	p, err := project.FromName(c.Param("project"))
+	if err != nil {
+		return c.String(http.StatusOK, err.Error())
+	}
+
+	err = workdir.RemoveProjectFiles(p.Name)
+	if err != nil {
+		return c.String(http.StatusOK, err.Error())
+	}
+
+	return c.Redirect(http.StatusFound, PathPrefix)
+}
+
 func transferEncodingChunked(c echo.Context, r io.Reader) error {
 	c.Response().Header().Set("Transfer-Encoding", "chunked")
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextPlainCharsetUTF8)
@@ -258,6 +272,7 @@ func Server() {
 	e.GET(PathPrefix+":project/logs", getLogs)
 	e.POST(PathPrefix+":project/checkout", postCheckout)
 	e.POST(PathPrefix+":project/deploy", postDeploy)
+	e.POST(PathPrefix+":project/remove", postRemove)
 	e.GET(PathPrefix+"assets/*", echo.WrapHandler(http.StripPrefix(PathPrefix, http.FileServer(Assets))))
 	e.GET(PathPrefix+"api/_stats", echo.WrapHandler(http.HandlerFunc(stats_api.Handler)))
 	e.GET(PathPrefix+":project", getIndex) // rewrite middlewareでできそう

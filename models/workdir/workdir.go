@@ -77,7 +77,7 @@ func RemoveProjectFiles(name string) error {
 		return errors.Wrap(err, "failed to delete project files")
 	}
 	err = os.Remove(LogFile(name))
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return errors.Wrap(err, "failed to delete log file")
 	}
 	return nil
