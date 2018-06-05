@@ -9,26 +9,26 @@
 <div class="container">
   <div class="row">
 
-    {{#if status}}
+    {#if status}
 
       <!-- main -->
       <div class="col-md-9">
-        {{#if status.currentProject}}
-        <Main :status></Main>
-        {{else}}
-        <Welcome :status></Welcome>
-        {{/if}}
+        {#if status.currentProject}
+        <Main {status}></Main>
+        {:else}
+        <Welcome {status}></Welcome>
+        {/if}
       </div>
 
       <!-- sidebar -->
       <aside class="col-md-3">
-        {{#if status.currentProject}}
-        <Lock :status></Lock>
-        {{/if}}
-        <Projects :status></Projects>
+        {#if status.currentProject}
+        <Lock {status}></Lock>
+        {/if}
+        <Projects {status}></Projects>
       </aside>
 
-    {{/if}}
+    {/if}
 
   </div>
 </div>

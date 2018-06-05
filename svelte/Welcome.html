@@ -13,19 +13,19 @@
   </div>
 </form>
 
-{{#if status.allProjects.length > 0}}
+{#if status.allProjects.length > 0}
   <h3>Remove a project</h3>
 
   <table class="table table-striped">
-    {{#each status.allProjects as project}}
+    {#each status.allProjects as project}
       <tr>
         <td>
-          <form action="./{{project.name}}/remove" method="post" class="form-inline">
-            <button class="btn btn-xs btn-danger confirm" data-confirm-text="Are you sure to remove {{project.name}}?"><i class="glyphicon glyphicon-trash"></i></button>
-            {{project.name}}
+          <form action="./{project.name}/remove" method="post" class="form-inline">
+            <button class="btn btn-xs btn-danger confirm" data-confirm-text="Are you sure to remove {project.name}?"><i class="glyphicon glyphicon-trash"></i></button>
+            {project.name}
           </form>
         </td>
       </tr>
-    {{/each}}
+    {/each}
   </table>
-{{/if}}
+{/if}

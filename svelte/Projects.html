@@ -2,16 +2,16 @@
   <h3>Projects</h3>
 
   <ul class="nav nav-pills nav-stacked">
-    {{#each status.allProjects as project}}
-      <li class="{{status.currentProject && status.currentProject.name === project.name ? 'active' : ''}}" >
-        <a href="./{{project.name}}">
-          {{project.name}}
-          {{#if project.lock}}
+    {#each status.allProjects as project}
+      <li class="{status.currentProject && status.currentProject.name === project.name ? 'active' : ''}" >
+        <a href="./{project.name}">
+          {project.name}
+          {#if project.lock}
             <i class="glyphicon glyphicon-time"></i>
-          {{/if}}
+          {/if}
         </a>
       </li>
-    {{/each}}
+    {/each}
   </ul>
 </div>
 
