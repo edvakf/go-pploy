@@ -19,7 +19,7 @@ web/assets.go: $(wildcard assets/*) components bootstrap izitoast
 	go-assets-builder -p web assets/ > $@
 
 components: $(wildcard svelte/*.html)
-	svelte compile -m -i svelte -o assets/components
+	svelte compile svelte -f es -o assets/components
 
 bootstrap: node_modules
 	rsync -a node_modules/bootstrap/dist/ assets/bootstrap/
