@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/edvakf/go-pploy#readme",
   "devDependencies": {
-    "svelte-cli": "^2.2.0"
+    "svelte-cli": "^3.0.0"
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
