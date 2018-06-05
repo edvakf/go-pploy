@@ -110,10 +110,11 @@ export default {
       if (this.commits) {
         this.commits.destroy();
       }
+      const { status } = this.get();
       this.commits = new Commits({
         target: this.refs.commitLogFrame.contentDocument.querySelector('commits'),
         data: {
-          project: this.get("status").currentProject,
+          project: status.currentProject,
         },
       });
     },

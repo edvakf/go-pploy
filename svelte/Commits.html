@@ -42,7 +42,7 @@
 <script>
 export default {
   oncreate() {
-    const project = this.get("project");
+    const { project } = this.get();
 
     const fetchStatusAPI = fetch(
       `./api/commits/${project.name}`,
