@@ -10,7 +10,7 @@ gox: vendor main.go $(wildcard web/*.go) web/assets.go
 	gox -os="darwin linux" -arch="amd64" -ldflags="-X main.GitCommit=${hash}"
 
 # please run `make prepare` before first build
-prepare: go-assets-builder dep vendor node_modules svelte
+prepare: go-assets-builder dep vendor node_modules
 
 test: web/assets.go
 	go test -v ./...
@@ -19,7 +19,7 @@ web/assets.go: $(wildcard assets/*) components bootstrap izitoast
 	go-assets-builder -p web assets/ > $@
 
 components: $(wildcard svelte/*.html)
-	svelte compile svelte -f es -o assets/components
+	npx svelte compile svelte -f es -o assets/components
 
 bootstrap: node_modules
 	rsync -a node_modules/bootstrap/dist/ assets/bootstrap/
@@ -38,10 +38,6 @@ go-assets-builder:
 
 dep:
 	go get -u github.com/golang/dep/cmd/dep
-
-# install `svelte` command
-svelte:
-	npm install -g svelte-cli
 
 clean:
 	rm web/assets.go
