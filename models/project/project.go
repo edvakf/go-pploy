@@ -120,8 +120,13 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	cmd.Env = append(cmd.Env, "DEPLOY_ENV="+env)
 	cmd.Env = append(cmd.Env, "DEPLOY_USER="+user)
 
+	err := workdir.RotateLogs(p.Name)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to rotate log files")
+	}
+
 	// write to log file
-	f, err := os.OpenFile(workdir.LogFile(p.Name), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	f, err := os.OpenFile(workdir.LogFile(p.Name, 0), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to open log file")
 	}
@@ -193,8 +198,8 @@ func (p *Project) readDeployEnvs() error {
 
 // LogReader returns a ReadCloser which reads either an entire file
 // or first 10000 bytes of it depending on the `full` parameter
-func (p *Project) LogReader(full bool) (io.ReadCloser, error) {
-	logFile := workdir.LogFile(p.Name)
+func (p *Project) LogReader(full bool, generation int) (io.ReadCloser, error) {
+	logFile := workdir.LogFile(p.Name, generation)
 	f, err := os.Open(logFile)
 	if err != nil {
 		if os.IsNotExist(err) {
