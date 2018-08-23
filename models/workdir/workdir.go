@@ -1,6 +1,7 @@
 package workdir
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"sort"
@@ -9,6 +10,8 @@ import (
 )
 
 var workDir string
+
+const logMax = 20
 
 // Init sets an internal workDir variable and prepares the working directory
 func Init(dir string) {
@@ -43,8 +46,22 @@ func ProjectDir(name string) string {
 }
 
 // LogFile returns the log file for of a project
-func LogFile(name string) string {
-	return LogsDir() + "/" + name + ".log"
+func LogFile(name string, generation int) string {
+	suffix := ""
+	if generation != 0 {
+		suffix = fmt.Sprintf(".%d", generation)
+	}
+	return LogsDir() + "/" + name + ".log" + suffix
+}
+
+func RotateLogs(name string) error {
+	for i := logMax; i > 0; i-- {
+		err := os.Rename(LogFile(name, i-1), LogFile(name, i))
+		if err != nil && !os.IsNotExist(err) {
+			return errors.Wrap(err, "failed to move log file")
+		}
+	}
+	return nil
 }
 
 func assetInitialized() {
@@ -76,9 +93,12 @@ func RemoveProjectFiles(name string) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to delete project files")
 	}
-	err = os.Remove(LogFile(name))
-	if err != nil && !os.IsNotExist(err) {
-		return errors.Wrap(err, "failed to delete log file")
+
+	for i := logMax; i >= 0; i-- {
+		err = os.Remove(LogFile(name, i))
+		if err != nil && !os.IsNotExist(err) {
+			return errors.Wrap(err, "failed to delete log file")
+		}
 	}
 	return nil
 }

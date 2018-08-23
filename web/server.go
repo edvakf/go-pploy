@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/edvakf/go-pploy/models/gitutil"
@@ -102,7 +103,12 @@ func getLogs(c echo.Context) error {
 		return c.String(http.StatusOK, err.Error())
 	}
 
-	r, err := p.LogReader(c.QueryParam("full") == "1")
+	generation, err := strconv.Atoi(c.QueryParam("generation"))
+	if err != nil {
+		generation = 0
+	}
+
+	r, err := p.LogReader(c.QueryParam("full") == "1", generation)
 	if err != nil {
 		return err
 	}
