@@ -11,7 +11,7 @@ import (
 
 var workDir string
 
-const logMax = 20
+var LogMax int
 
 // Init sets an internal workDir variable and prepares the working directory
 func Init(dir string) {
@@ -55,7 +55,7 @@ func LogFile(name string, generation int) string {
 }
 
 func RotateLogs(name string) error {
-	for i := logMax; i > 0; i-- {
+	for i := LogMax; i > 0; i-- {
 		err := os.Rename(LogFile(name, i-1), LogFile(name, i))
 		if err != nil && !os.IsNotExist(err) {
 			return errors.Wrap(err, "failed to move log file")
@@ -94,7 +94,7 @@ func RemoveProjectFiles(name string) error {
 		return errors.Wrap(err, "failed to delete project files")
 	}
 
-	for i := logMax; i >= 0; i-- {
+	for i := LogMax; i >= 0; i-- {
 		err = os.Remove(LogFile(name, i))
 		if err != nil && !os.IsNotExist(err) {
 			return errors.Wrap(err, "failed to delete log file")

@@ -33,6 +33,8 @@ func init() {
 	flag.StringVar(&pidFile, "pidfile", "", "pid file path")
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
 	flag.StringVar(&workDir, "workdir", "", "Working directory")
+	flag.IntVar(&workdir.LogMax, "logmax", 20, "Max number of log files to keep")
+
 	flag.StringVar(&web.PathPrefix, "prefix", "/", "Path prefix of the app (eg. /pploy/), useful for proxied apps")
 	flag.IntVar(&web.Port, "port", 9000, "HTTP port")
 
