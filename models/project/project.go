@@ -20,11 +20,11 @@ import (
 
 // Project is a git-controlled deployable project directory
 type Project struct {
-	Lock       *locks.Lock `json:"lock"`
-	Name       string      `json:"name"`
-	DeployEnvs []string    `json:"deployEnvs"`
-	Readme     string      `json:"readme"`
-	DefaultBranch string `json:"defaultBranch"`
+	Lock          *locks.Lock `json:"lock"`
+	Name          string      `json:"name"`
+	DeployEnvs    []string    `json:"deployEnvs"`
+	Readme        string      `json:"readme"`
+	DefaultBranch string      `json:"defaultBranch"`
 }
 
 // All returns all projects
