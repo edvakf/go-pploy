@@ -1,6 +1,7 @@
 package project
 
 import (
+	"bytes"
 	"io"
 	"io/ioutil"
 	"os"
@@ -23,6 +24,7 @@ type Project struct {
 	Name       string      `json:"name"`
 	DeployEnvs []string    `json:"deployEnvs"`
 	Readme     string      `json:"readme"`
+	DefaultBranch string `json:"defaultBranch"`
 }
 
 // All returns all projects
@@ -71,6 +73,12 @@ func Full(name string) (*Project, error) {
 		return nil, err
 	}
 	p.Lock = locks.Check(p.Name, time.Now())
+
+	defaultBranch, err := p.GetDefaultBranch()
+	if err != nil {
+		return nil, err
+	}
+	p.DefaultBranch = defaultBranch
 
 	return p, nil
 }
@@ -211,6 +219,25 @@ func (p *Project) LogReader(full bool, generation int) (io.ReadCloser, error) {
 		return f, nil
 	}
 	return headreader.New(f, 10000), nil // first 10000 bytes
+}
+
+// GetDefaultBranch returns default branch of repository
+func (p *Project) GetDefaultBranch() (string, error) {
+	cmd := exec.Command("git", "remote", "show", "origin")
+	cmd.Dir = workdir.ProjectDir(p.Name)
+	reader, err := stdoutReader(cmd, nil)
+
+	if err != nil {
+		return "", err
+	}
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(reader)
+	stdout := buf.String()
+	re := regexp.MustCompile("HEAD branch: (\\S+)")
+	group := re.FindStringSubmatch(stdout)
+
+	return group[1], nil
 }
 
 type EmptyReadCloser struct{}
