@@ -55,4 +55,4 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/Wang/pid"
+  name = "github.com/facebookarchive/pidfile"

@@ -6,12 +6,12 @@ import (
 	"log"
 	"time"
 
-	"github.com/Wang/pid"
 	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/ldapusers"
 	"github.com/edvakf/go-pploy/models/locks"
 	"github.com/edvakf/go-pploy/models/workdir"
 	"github.com/edvakf/go-pploy/web"
+	"github.com/facebookarchive/pidfile"
 )
 
 var GitCommit string
@@ -24,13 +24,11 @@ func init() {
 	// commit hash is passed at build time with -ldflags
 	fmt.Printf("commit: %s\n", GitCommit)
 
-	var pidFile string
 	var lockDuration time.Duration
 	var workDir string
 	var sc hook.SlackConfig
 	var lc ldapusers.Config
 
-	flag.StringVar(&pidFile, "pidfile", "", "pid file path")
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
 	flag.StringVar(&workDir, "workdir", "", "Working directory")
 	flag.IntVar(&workdir.LogMax, "logmax", 20, "Max number of log files to keep")
@@ -55,12 +53,18 @@ func init() {
 		log.Fatalf("Please set workdir flag")
 	}
 
-	if pidFile != "" {
-		pidValue, err := pid.Create(pidFile)
+	if pidfile.GetPidfilePath() != "" {
+		err := pidfile.Write()
 		if err != nil {
 			log.Fatalf("failed to create pid file:%s", err.Error())
 		}
+
+		pidValue, err := pidfile.Read()
 		fmt.Printf("pid:%d\n", pidValue)
+
+		if err != nil {
+			log.Fatalf("failed to read pid file:%s", err.Error())
+		}
 	}
 
 	locks.SetDuration(lockDuration)
