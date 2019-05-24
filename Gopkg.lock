@@ -3,124 +3,177 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/Wang/pid"
+  digest = "1:b0b75ab0829ae3769f1f221486da0c40c8dc0680fb93d072b5df5a39d56c996c"
+  name = "github.com/facebookarchive/pidfile"
   packages = ["."]
-  revision = "3434d7928c96df7307d7dcd946d3732fc2f75f4b"
+  pruneopts = "UT"
+  revision = "f242e2999868dcd267a2b86e49ce1f9cf9e15b16"
 
 [[projects]]
+  branch = "master"
+  digest = "1:c183111eaf02a9e6bb39c213bdfb5472b16f1955dd4c9dab82db83f114c64a63"
+  name = "github.com/facebookgo/atomicfile"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2de1f203e7d5e386a6833233882782932729f27e"
+
+[[projects]]
+  digest = "1:e846038327cd6adb9b52a34c8f2056bd76e1e382ab45b3ccc0308754b6bb1e41"
   name = "github.com/fukata/golang-stats-api-handler"
   packages = ["."]
+  pruneopts = "UT"
   revision = "90f0b59102629831cc109845475a8d77043412ec"
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:c42f32253560d1527291221734a9b0d9f20ace8ad076398c86b4e8cb59a72307"
   name = "github.com/go-playground/locales"
   packages = [
     ".",
-    "currency"
+    "currency",
   ]
+  pruneopts = "UT"
   revision = "e4cbcb5d0652150d40ad0646651076b6bd2be4f6"
   version = "v0.11.2"
 
 [[projects]]
+  digest = "1:e022cf244bcac1b6ef933f1a2e0adcf6a6dfd7b872d8d41e4d4179bb09a87cbc"
   name = "github.com/go-playground/universal-translator"
   packages = ["."]
+  pruneopts = "UT"
   revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
   version = "v0.16.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:15e429fca0b638a96e77d7b321e77314236f99282a02f30e589b1206a2d3410f"
   name = "github.com/hnakamur/slack-incoming-webhook"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0d4239e220a8f413ec431f1e3070be12b666787a"
 
 [[projects]]
   branch = "master"
+  digest = "1:446f04b6b59c2cfacf8e9784c431afda6708d72a7a09eaefb2ab96d2b9cf8536"
   name = "github.com/jessevdk/go-assets"
   packages = ["."]
+  pruneopts = "UT"
   revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
 
 [[projects]]
+  digest = "1:0f0dbabce22fdc4e4d752cd543c33b788e7c7a6e3ab48b54d449a22aa06922ee"
   name = "github.com/labstack/echo"
   packages = ["."]
+  pruneopts = "UT"
   revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
   version = "3.2.6"
 
 [[projects]]
+  digest = "1:d88036aa03a0d26d6e3e6f1a8304326112b5285b26a25081c6882055b7db45f0"
   name = "github.com/labstack/gommon"
   packages = [
     "color",
-    "log"
+    "log",
   ]
+  pruneopts = "UT"
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
 
 [[projects]]
+  digest = "1:c658e84ad3916da105a761660dcaeb01e63416c8ec7bc62256a9b411a05fcd67"
   name = "github.com/mattn/go-colorable"
   packages = ["."]
+  pruneopts = "UT"
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
   version = "v0.0.9"
 
 [[projects]]
+  digest = "1:d4d17353dbd05cb52a2a52b7fe1771883b682806f68db442b436294926bbfafb"
   name = "github.com/mattn/go-isatty"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
   version = "v0.0.3"
 
 [[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
+  pruneopts = "UT"
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:c468422f334a6b46a19448ad59aaffdfc0a36b08fdcc1c749a0b29b6453d7e59"
   name = "github.com/valyala/bytebufferpool"
   packages = ["."]
+  pruneopts = "UT"
   revision = "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
 
 [[projects]]
   branch = "master"
+  digest = "1:268b8bce0064e8c057d7b913605459f9a26dcab864c0886a56d196540fbf003f"
   name = "github.com/valyala/fasttemplate"
   packages = ["."]
+  pruneopts = "UT"
   revision = "dcecefd839c4193db0d35b88ec65b4c12d360ab0"
 
 [[projects]]
   branch = "master"
+  digest = "1:1a1835f8f9526ed161d9992f2a26633f52d141f6e453548f1289f577c0c23459"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
-    "acme/autocert"
+    "acme/autocert",
   ]
+  pruneopts = "UT"
   revision = "5119cf507ed5294cc409c092980c7497ee5d6fd2"
 
 [[projects]]
   branch = "master"
+  digest = "1:ba7d5e85e8b4f084fae02a1a9d7462980e889d1eb689c747507b30a30b8bfa67"
   name = "golang.org/x/sys"
   packages = ["unix"]
+  pruneopts = "UT"
   revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
 
 [[projects]]
+  digest = "1:81e1c5cee195fca5de06e2540cb63eea727a850b7e5c213548e7f81521c97a57"
   name = "gopkg.in/asn1-ber.v1"
   packages = ["."]
+  pruneopts = "UT"
   revision = "379148ca0225df7a432012b8df0355c2a2063ac0"
   version = "v1.2"
 
 [[projects]]
+  digest = "1:e3ef5236ce976857a3e4386ad747d8ec95a027e902fc41c9601e94372c465d81"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
+  pruneopts = "UT"
   revision = "3620d3c0694119b61c72071ff5a05a976e97b05a"
   version = "v9.9.4"
 
 [[projects]]
+  digest = "1:93aaeb913621a3a53aaa78592c00f46d63e3bb0ea76e2d9b07327b50959a5778"
   name = "gopkg.in/ldap.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "bb7a9ca6e4fbc2129e3db588a34bc970ffe811a9"
   version = "v2.5.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cad94a40813b019677b75eeba5488077905c2c3fd88bea6262010be60988381a"
+  input-imports = [
+    "github.com/facebookarchive/pidfile",
+    "github.com/fukata/golang-stats-api-handler",
+    "github.com/hnakamur/slack-incoming-webhook",
+    "github.com/jessevdk/go-assets",
+    "github.com/labstack/echo",
+    "github.com/pkg/errors",
+    "gopkg.in/go-playground/validator.v9",
+    "gopkg.in/ldap.v2",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

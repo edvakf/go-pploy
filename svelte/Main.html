@@ -7,7 +7,7 @@
     <div class="well">
       <h4>Checkout</h4>
       <form action="./{status.currentProject.name}/checkout" method="post" class="form-inline command-form" target="command-log-frame" on:submit="submitCommandForm()">
-        <input type="text" class="form-control" name="ref" value="origin/master" required>
+        <input type="text" class="form-control" name="ref" value="origin/{status.currentProject.defaultBranch}" required>
         <button class="btn btn-success checkout-button">Checkout</button>
       </form>
       <form action="./{status.currentProject.name}/deploy" method="post" class="command-form" target="command-log-frame" on:submit="submitCommandForm()">
