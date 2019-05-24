@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/edvakf/go-pploy/models/cache"
 	"github.com/edvakf/go-pploy/models/gitutil"
 	"github.com/edvakf/go-pploy/models/ldapusers"
 	"github.com/edvakf/go-pploy/models/locks"
@@ -133,6 +134,12 @@ func postCheckout(c echo.Context) error {
 	r, err := p.Checkout(form.Ref)
 	if err != nil {
 		return c.String(http.StatusOK, err.Error())
+	}
+
+	// Update default branch in cache
+	defaultBranch, err := p.GetDefaultBranch()
+	if err == nil {
+		cache.SetDefaultBranch(p.Name, defaultBranch)
 	}
 
 	return transferEncodingChunked(c, r)
