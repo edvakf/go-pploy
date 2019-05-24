@@ -183,6 +183,8 @@ func postRemove(c echo.Context) error {
 		return c.String(http.StatusOK, err.Error())
 	}
 
+	cache.DeleteDefaultBranch(p.Name)
+
 	return c.Redirect(http.StatusFound, PathPrefix)
 }
 
