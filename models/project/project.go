@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/edvakf/go-pploy/models/cache"
 	"github.com/edvakf/go-pploy/models/headreader"
 	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/locks"
@@ -74,7 +75,7 @@ func Full(name string) (*Project, error) {
 	}
 	p.Lock = locks.Check(p.Name, time.Now())
 
-	defaultBranch, err := p.GetDefaultBranch()
+	defaultBranch, err := p.GetCachedDefaultBranch()
 	if err != nil {
 		return nil, err
 	}
@@ -238,6 +239,27 @@ func (p *Project) GetDefaultBranch() (string, error) {
 	group := re.FindStringSubmatch(stdout)
 
 	return group[1], nil
+}
+
+// Returns cached default branch if exists.
+// If default branch is not cached, get default branch from and save to cache.
+func (p *Project) GetCachedDefaultBranch() (string, error) {
+	cachedDefaultBranch := cache.GetDefaultBranch(p.Name)
+
+	if cachedDefaultBranch != "" {
+		// returns cached default branch
+		return cachedDefaultBranch, nil
+	}
+
+	defaultBranch, err := p.GetDefaultBranch()
+
+	if err != nil {
+		return "", err
+	}
+
+	cache.SetDefaultBranch(p.Name, defaultBranch)
+
+	return defaultBranch, nil
 }
 
 type EmptyReadCloser struct{}
