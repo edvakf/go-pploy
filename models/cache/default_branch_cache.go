@@ -2,7 +2,7 @@ package cache
 
 var defaultBranchCache = make(map[string]string)
 
-// Get cached default branch
+// GetDefaultBranch returns the default branch name in cache.
 func GetDefaultBranch(project string) string {
 	branch, ok := defaultBranchCache[project]
 
