@@ -18,7 +18,7 @@ func SetDefaultBranch(project string, branch string) {
 	defaultBranchCache[project] = branch
 }
 
-// Delete default branch in cache
+// DeleteDefaultBranch deletes the default branch cache entry.
 func DeleteDefaultBranch(project string) {
 	delete(defaultBranchCache, project)
 }
