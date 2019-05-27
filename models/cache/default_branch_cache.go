@@ -13,7 +13,7 @@ func GetDefaultBranch(project string) string {
 	return branch
 }
 
-// Set default branch to cache
+// SetDefaultBranch caches the default branch name.
 func SetDefaultBranch(project string, branch string) {
 	defaultBranchCache[project] = branch
 }
