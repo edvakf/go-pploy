@@ -244,7 +244,7 @@ func (p *Project) GetDefaultBranch() (string, error) {
 // GetCachedDefaultBranch returns cached default branch if exists.
 // GetCachedDefaultBranch returns the default branch from memory if cached, otherwise, compute and cache it.
 func (p *Project) GetCachedDefaultBranch() (string, error) {
-	cachedDefaultBranch := cache.GetDefaultBranch(p.Name)
+	cachedDefaultBranch := cache.DefaultBranch.Load(p.Name)
 
 	if cachedDefaultBranch != "" {
 		// returns cached default branch
@@ -257,7 +257,7 @@ func (p *Project) GetCachedDefaultBranch() (string, error) {
 		return "", err
 	}
 
-	cache.SetDefaultBranch(p.Name, defaultBranch)
+	cache.DefaultBranch.Store(p.Name, defaultBranch)
 
 	return defaultBranch, nil
 }

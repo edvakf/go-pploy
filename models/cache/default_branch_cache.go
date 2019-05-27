@@ -1,24 +1,31 @@
 package cache
 
-var defaultBranchCache = make(map[string]string)
+import "sync"
 
-// GetDefaultBranch returns the default branch name in cache.
-func GetDefaultBranch(project string) string {
-	branch, ok := defaultBranchCache[project]
+type defaultBranchCache struct {
+	sm sync.Map
+}
+
+// DefaultBranch represents cache of default branch
+var DefaultBranch = &defaultBranchCache{}
+
+// Load returns the default branch name in cache.
+func (c *defaultBranchCache) Load(project string) string {
+	branch, ok := c.sm.Load(project)
 
 	if !ok {
 		return ""
 	}
 
-	return branch
+	return branch.(string)
 }
 
-// SetDefaultBranch caches the default branch name.
-func SetDefaultBranch(project string, branch string) {
-	defaultBranchCache[project] = branch
+// Store caches the default branch name.
+func (c *defaultBranchCache) Store(project string, branch string) {
+	c.sm.Store(project, branch)
 }
 
-// DeleteDefaultBranch deletes the default branch cache entry.
-func DeleteDefaultBranch(project string) {
-	delete(defaultBranchCache, project)
+// Delete deletes the default branch cache entry.
+func (c *defaultBranchCache) Delete(project string) {
+	c.sm.Delete(project)
 }

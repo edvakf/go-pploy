@@ -139,7 +139,7 @@ func postCheckout(c echo.Context) error {
 	// Update default branch in cache
 	defaultBranch, err := p.GetDefaultBranch()
 	if err == nil {
-		cache.SetDefaultBranch(p.Name, defaultBranch)
+		cache.DefaultBranch.Store(p.Name, defaultBranch)
 	}
 
 	return transferEncodingChunked(c, r)
@@ -183,7 +183,7 @@ func postRemove(c echo.Context) error {
 		return c.String(http.StatusOK, err.Error())
 	}
 
-	cache.DeleteDefaultBranch(p.Name)
+	cache.DefaultBranch.Delete(p.Name)
 
 	return c.Redirect(http.StatusFound, PathPrefix)
 }
