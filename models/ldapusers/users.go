@@ -3,6 +3,8 @@ package ldapusers
 import (
 	"fmt"
 	"log"
+	"sort"
+	"strings"
 	"time"
 
 	ldap "gopkg.in/ldap.v2"
@@ -41,6 +43,11 @@ func All() []string {
 			nextUpdate = time.Now().Add(config.CacheTTL)
 			users = u
 		}
+
+		// Sort by user name
+		sort.Slice(users, func(i, j int) bool {
+			return strings.Compare(users[i], users[j]) < 0
+		})
 	}
 	return users
 }
