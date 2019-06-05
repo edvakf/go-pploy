@@ -3,10 +3,10 @@ hash := $(shell git rev-parse --verify HEAD)
 .PHONY: test components bootstrap izitoast go-assets-builder svelte clean gox
 
 # `make` builds go-pploy
-go-pploy: main.go $(wildcard web/*.go) web/assets.go
+go-pploy: main.go $(wildcard web/*.go) web/assets.go get
 	go build -ldflags "-X main.GitCommit=${hash}"
 
-gox: main.go $(wildcard web/*.go) web/assets.go
+gox: main.go $(wildcard web/*.go) web/assets.go get
 	gox -os="darwin linux" -arch="amd64" -ldflags="-X main.GitCommit=${hash}"
 
 # please run `make prepare` before first build
@@ -32,6 +32,9 @@ node_modules:
 
 go-assets-builder:
 	go get -u github.com/jessevdk/go-assets-builder
+
+get:
+	go get
 
 clean:
 	rm web/assets.go

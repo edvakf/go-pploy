@@ -11,6 +11,8 @@ require (
 	github.com/go-playground/universal-translator v0.16.0 // indirect
 	github.com/hnakamur/slack-incoming-webhook v0.0.0-20161121081503-0d4239e220a8
 	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
+	github.com/jessevdk/go-assets-builder v0.0.0-20130903091706-b8483521738f // indirect
+	github.com/jessevdk/go-flags v1.4.0 // indirect
 	github.com/labstack/echo v3.2.6+incompatible
 	github.com/labstack/gommon v0.0.0-20170925052817-57409ada9da0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
