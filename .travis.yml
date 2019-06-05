@@ -2,8 +2,7 @@ language: go
 go:
   - "1.12"
 env:
-  - "PATH=$PATH:$GOPATH/bin/path"
-  - "GO111MODULE=on"
+  - "PATH=$PATH:$GOPATH/bin/path GO111MODULE=on"
 before_install:
   - make prepare
   - go get github.com/mitchellh/gox
