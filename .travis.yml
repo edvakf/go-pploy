@@ -1,6 +1,6 @@
 language: go
 go:
-  - "1.10"
+  - "1.12"
 env:
   - "PATH=$PATH:$GOPATH/bin/path"
 before_install:
