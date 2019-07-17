@@ -25,6 +25,18 @@ When tagged, travis uploads binaries to GitHub Release.
 
 ```
 Usage of ./go-pploy:
+  -ddapikey string
+    	Datadog API key
+  -ddappkey string
+    	Datadog APP key
+  -ddlockgained string
+    	Message template for Datadog when lock is gained
+  -ddlockreleased string
+    	Message template for Datadog when lock is released
+  -ddlockextended string
+    	Message template for Datadog when lock is extended
+  -ddlockextended string
+    	Message template for Datadog when deploy is ended
   -deployed string
     	Message template for when deploy is ended
   -ldapdn string

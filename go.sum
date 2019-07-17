@@ -1,3 +1,5 @@
+github.com/cenkalti/backoff v2.1.1+incompatible h1:tKJnvO2kl0zmb/jA5UKAt4VoEVw1qxKWjE/Bpp46npY=
+github.com/cenkalti/backoff v2.1.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/facebookarchive/pidfile v0.0.0-20150612191647-f242e2999868 h1:6+BXLwguZv0VHp7T286BKFxkzhn0n/rKBxfD2bBda4U=
@@ -39,6 +41,8 @@ github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6Kllzaw
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 h1:gKMu1Bf6QINDnvyZuTaACm9ofY+PRh+5vFz4oxBZeF8=
 github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4/go.mod h1:50wTf68f99/Zt14pr046Tgt3Lp2vLyFZKzbFXTOabXw=
+github.com/zorkian/go-datadog-api v2.21.0+incompatible h1:0VoM99qhHpD3FusaEaeD3C6HikYgesr8cSSknq1vmTY=
+github.com/zorkian/go-datadog-api v2.21.0+incompatible/go.mod h1:PkXwHX9CUQa/FpB9ZwAD45N1uhCW4MT/Wj7m36PbKss=
 golang.org/x/crypto v0.0.0-20180208170933-5119cf507ed5 h1:YiZSmx39JJyBXrPAMqxSUHrJuQq5qRSFl0u6egWjgCY=
 golang.org/x/crypto v0.0.0-20180208170933-5119cf507ed5/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/sys v0.0.0-20180202135801-37707fdb30a5 h1:MF92a0wJ3gzSUVBpjcwdrDr5+klMFRNEEu6Mev4n00I=

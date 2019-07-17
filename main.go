@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/edvakf/go-pploy/models/datadog"
 	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/ldapusers"
 	"github.com/edvakf/go-pploy/models/locks"
@@ -27,6 +28,7 @@ func init() {
 	var lockDuration time.Duration
 	var workDir string
 	var sc hook.SlackConfig
+	var dc datadog.DatadogConfig
 	var lc ldapusers.Config
 
 	flag.DurationVar(&lockDuration, "lock", 10*time.Minute, "Duration (ex. 10m) for lock gain")
@@ -41,6 +43,13 @@ func init() {
 	flag.StringVar(&sc.LockReleasedMessage, "lockreleased", "", "Message template for when lock is released")
 	flag.StringVar(&sc.LockExtendedMessage, "lockextended", "", "Message template for when lock is extended")
 	flag.StringVar(&sc.DeployedMessage, "deployed", "", "Message template for when deploy is ended")
+
+	flag.StringVar(&dc.APIKey, "ddapikey", "", "Datadog API key")
+	flag.StringVar(&dc.APPKey, "ddappkey", "", "Datadog APP key")
+	flag.StringVar(&dc.LockGainedMessage, "ddlockgained", "", "Message template for Datadog when lock is gained")
+	flag.StringVar(&dc.LockReleasedMessage, "ddlockreleased", "", "Message template for Datadog when lock is released")
+	flag.StringVar(&dc.LockExtendedMessage, "ddlockextended", "", "Message template for Datadog when lock is extended")
+	flag.StringVar(&dc.DeployedMessage, "dddeployed", "", "Message template for Datadog when deploy is ended")
 
 	flag.StringVar(&lc.Host, "ldaphost", "", "LDAP host (leave empty if ldap is not needed)")
 	flag.IntVar(&lc.Port, "ldapport", 389, "LDAP port")
@@ -70,5 +79,6 @@ func init() {
 	locks.SetDuration(lockDuration)
 	workdir.Init(workDir)
 	hook.SetSlackConfig(sc)
+	datadog.SetDatadogConfig(dc)
 	ldapusers.SetConfig(lc)
 }
