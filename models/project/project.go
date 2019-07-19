@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/edvakf/go-pploy/models/cache"
+	"github.com/edvakf/go-pploy/models/datadog"
 	"github.com/edvakf/go-pploy/models/headreader"
 	"github.com/edvakf/go-pploy/models/hook"
 	"github.com/edvakf/go-pploy/models/locks"
@@ -141,6 +142,7 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	}
 	callback := func() {
 		f.Close()
+		datadog.Deployed(p.Name, user, env)
 		hook.Deployed(p.Name, user, env)
 	}
 	r, err := stdoutReader(cmd, callback)

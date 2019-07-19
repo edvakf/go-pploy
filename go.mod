@@ -3,6 +3,7 @@ module github.com/edvakf/go-pploy
 go 1.12
 
 require (
+	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
 	github.com/facebookarchive/pidfile v0.0.0-20150612191647-f242e2999868
 	github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5 // indirect
 	github.com/facebookgo/pidfile v0.0.0-20150612191647-f242e2999868 // indirect
@@ -21,6 +22,7 @@ require (
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect
+	github.com/zorkian/go-datadog-api v2.21.0+incompatible
 	golang.org/x/crypto v0.0.0-20180208170933-5119cf507ed5 // indirect
 	golang.org/x/sys v0.0.0-20180202135801-37707fdb30a5 // indirect
 	gopkg.in/asn1-ber.v1 v1.0.0-20170511165959-379148ca0225 // indirect

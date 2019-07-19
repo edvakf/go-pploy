@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/edvakf/go-pploy/models/datadog"
 	"github.com/edvakf/go-pploy/models/hook"
 )
 
@@ -54,6 +55,7 @@ func Gain(project string, user string, now time.Time) (*Lock, error) {
 	}
 	l = Lock{User: user, EndTime: now.Add(lockDuration)}
 	locks[project] = l
+	datadog.LockGained(project, user)
 	hook.LockGained(project, user)
 	return &l, nil
 }
@@ -71,6 +73,7 @@ func Extend(project string, user string, now time.Time) (*Lock, error) {
 	// l.EndTime = l.EndTime.Add(lockDuration)
 	l = Lock{User: user, EndTime: l.EndTime.Add(lockDuration)}
 	locks[project] = l
+	datadog.LockExtended(project, user)
 	hook.LockExtended(project, user)
 	return &l, nil
 }
@@ -86,6 +89,7 @@ func Release(project string, user string, now time.Time) error {
 		return errors.New("user does not have lock for the project")
 	}
 	delete(locks, project)
+	datadog.LockReleased(project, user)
 	hook.LockReleased(project, user)
 	return nil
 }
