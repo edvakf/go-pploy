@@ -28,11 +28,11 @@
       }
     ).then((response) => {
       return response.json();
-    }).then((status) => {
-      if (status.message !== "") {
-        iziToast.error({ message: status.message, position: 'topRight' });
+    }).then((_status) => {
+      if (_status.message !== "") {
+        iziToast.error({ message: _status.message, position: 'topRight' });
       }
-      status = status;
+      status = _status;
     }).catch((error) => {
       console.log(error);
       iziToast.error({ message: error.message, position: 'topRight' });
