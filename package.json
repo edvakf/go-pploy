@@ -16,10 +16,19 @@
   },
   "homepage": "https://github.com/edvakf/go-pploy#readme",
   "devDependencies": {
+    "rollup": "^1.12.0",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-livereload": "^1.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-svelte": "^5.0.3",
+    "rollup-plugin-terser": "^4.0.4",
     "svelte": "^3.8.1"
   },
   "dependencies": {
     "bootstrap": "~3.4.1",
     "izitoast": "^1.2.0"
+  },
+  "scripts": {
+    "build": "rollup -c"
   }
 }
