@@ -1,3 +1,26 @@
+<script>
+  import { onMount } from 'svelte';
+
+  export let commits = [];
+  export let project;
+
+  onMount(() => {
+
+  const fetchStatusAPI = fetch(
+    `./api/commits/${project.name}`,
+    {
+      credentials: 'same-origin',
+    }
+  ).then((response) => {
+    return response.json();
+  }).then((commits) => {
+    commits = commits;
+  }).catch((error) => {
+    message = error.message;
+  });
+});
+</script>
+
 <table>
   <tbody>
     {#each commits as commit}
@@ -37,30 +60,3 @@
     {/each}
   </tbody>
 </table>
-
-
-<script>
-export default {
-  oncreate() {
-    const { project } = this.get();
-
-    const fetchStatusAPI = fetch(
-      `./api/commits/${project.name}`,
-      {
-        credentials: 'same-origin',
-      }
-    ).then((response) => {
-      return response.json();
-    }).then((commits) => {
-      this.set({commits});
-    }).catch((error) => {
-      this.set({message: error.message});
-    });
-  },
-  data() {
-    return {
-      commits: [],
-    };
-  },
-};
-</script>
