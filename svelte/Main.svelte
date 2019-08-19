@@ -1,4 +1,6 @@
 <script>
+  export let status;
+
   import { onDestroy, onMount } from 'svelte';
 
   // [svelte-upgrade suggestion]
@@ -9,7 +11,7 @@
   export let commandLogFrame;
   export let commitLogFrame;
 
-  import Commits from './Commits.js';
+  import Commits from './Commits.svelte';
 
 function disableAllButtons() {
   setTimeout(function() {
@@ -24,8 +26,6 @@ function enableAllButtons() {
       .forEach(b => b.removeAttribute('disabled'));
   }, 10);
 }
-
-export let status;
 
   onMount(() => {
   // follow scroll

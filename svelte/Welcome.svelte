@@ -1,3 +1,7 @@
+<script>
+export let status;
+</script>
+
 <h2>Welcome to pploy</h2>
 
 <p>Click on a project in the sidebar.</p>

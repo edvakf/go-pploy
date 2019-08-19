@@ -1,4 +1,6 @@
 <script>
+  export let status;
+
   import { onDestroy, onMount } from 'svelte';
 
   // [svelte-upgrade suggestion]
@@ -13,7 +15,6 @@ function secondsToString(seconds) {
   return pad02(Math.floor(seconds/60)) + ':' + pad02(Math.floor(seconds%60));
 }
 
-export let status;
   export let now = Date.now();
 
   onMount(() => {

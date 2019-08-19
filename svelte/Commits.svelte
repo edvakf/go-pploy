@@ -1,4 +1,6 @@
 <script>
+  export let status;
+
   import { onMount } from 'svelte';
 
   export let commits = [];
@@ -33,14 +35,14 @@
           {#each commit.otherRefs as ref}
             {#if ref === "HEAD"}
               <span class="ref head">HEAD</span>
-            {:elseif ref.startsWith("refs/remotes/origin/master")}
+            {:else if ref.startsWith("refs/remotes/origin/master")}
               <span class="ref master">origin/master</span>
-            {:elseif ref.startsWith("refs/remotes/")}
+            {:else if ref.startsWith("refs/remotes/")}
               <span class="ref">{ref.slice("refs/remotes/".length)}</span>
-            {:elseif ref.startsWith("refs/heads/")}
-            {:elseif ref.startsWith("refs/tags/")}
+            {:else if ref.startsWith("refs/heads/")}
+            {:else if ref.startsWith("refs/tags/")}
               <span class="ref tag">{ref.slice("refs/tags/".length)}</span>
-            {:elseif ref.startsWith("tag: refs/tags/")}
+            {:else if ref.startsWith("tag: refs/tags/")}
               <span class="ref tag">{ref.slice("tag: refs/tags/".length)}</span>
             {:else}
               <span class="ref">{ref}</span>

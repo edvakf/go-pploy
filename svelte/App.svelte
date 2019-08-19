@@ -1,10 +1,10 @@
 <script>
   import { onMount } from 'svelte';
 
-  import Lock from './Lock.js';
-import Projects from './Projects.js';
-import Main from './Main.js';
-import Welcome from './Welcome.js';
+  import Lock from './Lock.svelte';
+import Projects from './Projects.svelte';
+import Main from './Main.svelte';
+import Welcome from './Welcome.svelte';
 
 export let status;
 
