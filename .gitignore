@@ -2,7 +2,6 @@
 /web/assets.go
 /assets/
 !/assets/index.html
-!/assets/components/.keep
 !/assets/bootstrap/.keep
 !/assets/izitoast/.keep
 /go-pploy

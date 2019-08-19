@@ -39,7 +39,6 @@ get:
 clean:
 	rm web/assets.go
 	rm assets/bundle.*
-	rm assets/components/*
 	rm -r assets/bootstrap/*
 	rm -r node_modules
-	rm pploy
+	rm go-pploy
