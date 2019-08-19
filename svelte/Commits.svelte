@@ -8,7 +8,7 @@
 
   onMount(() => {
 
-    const fetchStatusAPI = fetch(
+    fetch(
       `./api/commits/${project.name}`,
       {
         credentials: 'same-origin',
@@ -40,6 +40,7 @@
             {:else if ref.startsWith("refs/remotes/")}
               <span class="ref">{ref.slice("refs/remotes/".length)}</span>
             {:else if ref.startsWith("refs/heads/")}
+              <!-- skip -->
             {:else if ref.startsWith("refs/tags/")}
               <span class="ref tag">{ref.slice("refs/tags/".length)}</span>
             {:else if ref.startsWith("tag: refs/tags/")}

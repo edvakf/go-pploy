@@ -3,10 +3,6 @@
 
   import { onDestroy, onMount } from 'svelte';
 
-  // [svelte-upgrade suggestion]
-  // manually refactor all references to __this
-  const __this = {};
-
   function pad02(num) {
     return ('0' + num).substr(-2);
   }
@@ -15,16 +11,14 @@
     return pad02(Math.floor(seconds / 60)) + ':' + pad02(Math.floor(seconds % 60));
   }
 
-  export let now = Date.now();
+  let now = Date.now();
 
   onMount(() => {
-    __this.interval = setInterval(() => {
+    const interval = setInterval(() => {
       now = Date.now();
     }, 1000);
-  });
 
-  onDestroy(() => {
-    clearInterval(__this.interval);
+    return () => clearInterval(interval);
   });
 
   const minutesAndSecondsLeft = (endTime, now) => {

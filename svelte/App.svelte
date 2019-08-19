@@ -20,9 +20,7 @@
     }, 10000);
   });
 
-  // [svelte-upgrade suggestion]
-  // review these functions and remove unnecessary 'export' keywords
-  export function fetchStatusAPI(project) {
+  function fetchStatusAPI(project) {
     fetch(
       `./api/status/${project}`,
       {

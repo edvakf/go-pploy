@@ -3,10 +3,6 @@
 
   import { onDestroy, onMount } from 'svelte';
 
-  // [svelte-upgrade suggestion]
-  // manually refactor all references to __this
-  const __this = {};
-
   export let commandLog;
   export let commandLogFrame;
   export let commitLogFrame;
@@ -30,20 +26,16 @@
   onMount(() => {
     // follow scroll
     const f = commandLogFrame;
-    __this.interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (f.classList.contains('loading')) {
         f.contentWindow.scrollTo(0, f.contentDocument.body.offsetHeight);
       }
     }, 200);
+
+    return () => clearInterval(interval);
   });
 
-  onDestroy(() => {
-    clearInterval(__this.interval);
-  });
-
-  // [svelte-upgrade suggestion]
-  // review these functions and remove unnecessary 'export' keywords
-  export function submitCommandForm() {
+  function submitCommandForm() {
     commandLog.classList.remove('hidden');
 
     // set border to red
@@ -52,7 +44,7 @@
     disableAllButtons();
   }
 
-  export function doneCommand() {
+  function doneCommand() {
     if (!commandLogFrame) {
       return; // on:load is called while dom is still incomplete
     }
@@ -65,11 +57,13 @@
     enableAllButtons();
   }
 
-  export function loadCommits() {
-    if (__this.commits) {
-      __this.commits.destroy();
+  let commits = null;
+
+  function loadCommits() {
+    if (commits) {
+      commits.destroy();
     }
-    __this.commits = new Commits({
+    commits = new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
       data: {
         project: status.currentProject,
@@ -106,17 +100,17 @@
     {/if}
 
     <div id="command-log" class="hidden embed-responsive embed-responsive-16by9" bind:this={commandLog}>
-      <iframe name="command-log-frame" class="log-frame embed-responsive-item" src="about:blank" bind:this={commandLogFrame} on:load="{doneCommand}"></iframe>
+      <iframe name="command-log-frame" class="log-frame embed-responsive-item" src="about:blank" bind:this={commandLogFrame} on:load="{doneCommand}" title="commit logs"></iframe>
     </div>
 
     <h3>Recent Commits</h3>
     <div id="commit-log" class="embed-responsive embed-responsive-16by9">
-      <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="{loadCommits}" bind:this={commitLogFrame}></iframe>
+      <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="{loadCommits}" bind:this={commitLogFrame} title="recent commits"></iframe>
     </div>
 
     <h3>Previous log <a href="./{status.currentProject.name}/logs?full=1&amp;generation=0" target="_blank" class="glyphicon glyphicon-hand-right"></a></h3>
     <div class="embed-responsive embed-responsive-16by9">
-      <iframe class="log-frame embed-responsive-item" src="./{status.currentProject.name}/logs"></iframe>
+      <iframe class="log-frame embed-responsive-item" src="./{status.currentProject.name}/logs" title="previous logs"></iframe>
     </div>
   </div>
 </div>
