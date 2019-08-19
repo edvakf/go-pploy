@@ -1,6 +1,6 @@
 hash := $(shell git rev-parse --verify HEAD)
 
-.PHONY: test components bootstrap izitoast go-assets-builder svelte clean gox
+.PHONY: test svelte bootstrap izitoast go-assets-builder clean gox
 
 # `make` builds go-pploy
 go-pploy: main.go $(wildcard web/*.go) web/assets.go get
@@ -15,11 +15,11 @@ prepare: go-assets-builder node_modules
 test: web/assets.go
 	go test -v ./...
 
-web/assets.go: $(wildcard assets/*) components bootstrap izitoast
+web/assets.go: $(wildcard assets/*) svelte bootstrap izitoast
 	go-assets-builder -p web assets/ > $@
 
-components: $(wildcard svelte/*.html)
-	npx svelte compile svelte -f es -o assets/components
+svelte: $(wildcard svelte/*.svelte) svelte/main.js
+	npm run build
 
 bootstrap: node_modules
 	rsync -a node_modules/bootstrap/dist/ assets/bootstrap/
@@ -38,6 +38,7 @@ get:
 
 clean:
 	rm web/assets.go
+	rm assets/bundle.*
 	rm assets/components/*
 	rm -r assets/bootstrap/*
 	rm -r node_modules
