@@ -13,72 +13,73 @@
 
   import Commits from './Commits.svelte';
 
-function disableAllButtons() {
-  setTimeout(function() {
-    Array.from(document.querySelectorAll('button'))
-      .forEach(b => b.setAttribute('disabled', 'disabled'));
-  }, 10);
-}
+  function disableAllButtons() {
+    setTimeout(function () {
+      Array.from(document.querySelectorAll('button'))
+        .forEach(b => b.setAttribute('disabled', 'disabled'));
+    }, 10);
+  }
 
-function enableAllButtons() {
-  setTimeout(function() {
-    Array.from(document.querySelectorAll('button'))
-      .forEach(b => b.removeAttribute('disabled'));
-  }, 10);
-}
+  function enableAllButtons() {
+    setTimeout(function () {
+      Array.from(document.querySelectorAll('button'))
+        .forEach(b => b.removeAttribute('disabled'));
+    }, 10);
+  }
 
   onMount(() => {
-  // follow scroll
-  const f = commandLogFrame;
-  __this.interval = setInterval(() => {
-    if (f.classList.contains('loading')) {
-      f.contentWindow.scrollTo(0, f.contentDocument.body.offsetHeight);
-    }
-  }, 200);
-});
+    // follow scroll
+    const f = commandLogFrame;
+    __this.interval = setInterval(() => {
+      if (f.classList.contains('loading')) {
+        f.contentWindow.scrollTo(0, f.contentDocument.body.offsetHeight);
+      }
+    }, 200);
+  });
 
   onDestroy(() => {
-  clearInterval(__this.interval);
-});
+    clearInterval(__this.interval);
+  });
 
   // [svelte-upgrade suggestion]
   // review these functions and remove unnecessary 'export' keywords
   export function submitCommandForm() {
-  commandLog.classList.remove('hidden');
+    commandLog.classList.remove('hidden');
 
-  // set border to red
-  commandLogFrame.classList.add('loading');
+    // set border to red
+    commandLogFrame.classList.add('loading');
 
-  disableAllButtons();
-}
+    disableAllButtons();
+  }
 
   export function doneCommand() {
-  if (!commandLogFrame) {
-    return; // on:load is called while dom is still incomplete
+    if (!commandLogFrame) {
+      return; // on:load is called while dom is still incomplete
+    }
+
+    // set border to back to black
+    commandLogFrame.classList.remove('loading');
+
+    loadCommits();
+
+    enableAllButtons();
   }
-
-  // set border to back to black
-  commandLogFrame.classList.remove('loading');
-
-  loadCommits();
-
-  enableAllButtons();
-}
 
   export function loadCommits() {
-  if (__this.commits) {
-    __this.commits.destroy();
+    if (__this.commits) {
+      __this.commits.destroy();
+    }
+    __this.commits = new Commits({
+      target: commitLogFrame.contentDocument.querySelector('commits'),
+      data: {
+        project: status.currentProject,
+      },
+    });
   }
-  __this.commits = new Commits({
-    target: commitLogFrame.contentDocument.querySelector('commits'),
-    data: {
-      project: status.currentProject,
-    },
-  });
-}
 </script>
 
-<div class="panel {status.currentProject.lock && status.currentProject.lock.user === status.currentUser ? 'panel-danger' : 'panel-primary'}">
+<div
+  class="panel {status.currentProject.lock && status.currentProject.lock.user === status.currentUser ? 'panel-danger' : 'panel-primary'}">
   <div class="panel-heading">
     <h2 class="panel-title">{status.currentProject.name}</h2>
   </div>

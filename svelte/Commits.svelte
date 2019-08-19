@@ -8,19 +8,19 @@
 
   onMount(() => {
 
-  const fetchStatusAPI = fetch(
-    `./api/commits/${project.name}`,
-    {
-      credentials: 'same-origin',
-    }
-  ).then((response) => {
-    return response.json();
-  }).then((commits) => {
-    commits = commits;
-  }).catch((error) => {
-    message = error.message;
+    const fetchStatusAPI = fetch(
+      `./api/commits/${project.name}`,
+      {
+        credentials: 'same-origin',
+      }
+    ).then((response) => {
+      return response.json();
+    }).then((commits) => {
+      commits = commits;
+    }).catch((error) => {
+      message = error.message;
+    });
   });
-});
 </script>
 
 <table>

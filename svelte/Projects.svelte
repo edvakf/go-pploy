@@ -1,5 +1,5 @@
 <script>
-export let status;
+  export let status;
 </script>
 
 <div class="sidebar-section box">

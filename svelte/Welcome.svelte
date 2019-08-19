@@ -1,5 +1,5 @@
 <script>
-export let status;
+  export let status;
 </script>
 
 <h2>Welcome to pploy</h2>
@@ -10,7 +10,8 @@ export let status;
 
 <form action="./_create" method="post">
   <div class="input-group">
-    <input type="text" class="form-control" name="url" value="" placeholder="https://github.com/edvakf/testploy.git" required>
+    <input type="text" class="form-control" name="url" value="" placeholder="https://github.com/edvakf/testploy.git"
+      required>
     <span class="input-group-btn">
       <button class="btn btn-success" type="submit">git clone</button>
     </span>

@@ -8,36 +8,36 @@
   const __this = {};
 
   function pad02(num) {
-  return ('0' + num).substr(-2);
-}
+    return ('0' + num).substr(-2);
+  }
 
-function secondsToString(seconds) {
-  return pad02(Math.floor(seconds/60)) + ':' + pad02(Math.floor(seconds%60));
-}
+  function secondsToString(seconds) {
+    return pad02(Math.floor(seconds / 60)) + ':' + pad02(Math.floor(seconds % 60));
+  }
 
   export let now = Date.now();
 
   onMount(() => {
-  __this.interval = setInterval(() => {
-    now = Date.now();
-  }, 1000);
-});
+    __this.interval = setInterval(() => {
+      now = Date.now();
+    }, 1000);
+  });
 
   onDestroy(() => {
-  clearInterval(__this.interval);
-});
+    clearInterval(__this.interval);
+  });
 
   const minutesAndSecondsLeft = (endTime, now) => {
-  const timeLeft = Date.parse(endTime) - now;
-  if (timeLeft < 0) {
-    location.reload();
-  }
-  return secondsToString(timeLeft / 1000);
-};
+    const timeLeft = Date.parse(endTime) - now;
+    if (timeLeft < 0) {
+      location.reload();
+    }
+    return secondsToString(timeLeft / 1000);
+  };
 </script>
 
 <form class="sidebar-section box" action="./{status.currentProject.name}/lock" method="POST" id="lock-form"
-    data-lock-user="{status.currentProject.lock ? status.currentProject.lock.user : ''}">
+  data-lock-user="{status.currentProject.lock ? status.currentProject.lock.user : ''}">
   {#if status.currentProject.lock}
     <p>
       Working
