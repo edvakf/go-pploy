@@ -10,7 +10,6 @@
 
   onMount(() => {
     const pathComponents = location.pathname.split('/');
-    // const pathPrefix = pathComponents.length === 2 ? null : pathComponents[pathComponents.length - 2];
     const project = pathComponents[pathComponents.length - 1];
 
     fetchStatusAPI(project);
