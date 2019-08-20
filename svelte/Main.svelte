@@ -61,7 +61,7 @@
 
   function loadCommits() {
     if (commits) {
-      commits.destroy();
+      commits.$destroy();
     }
     commits = new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
