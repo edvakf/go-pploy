@@ -1,3 +1,27 @@
+<script>
+  import { onMount } from 'svelte';
+
+  export let project;
+
+  let commits = [];
+
+  onMount(() => {
+
+    fetch(
+      `./api/commits/${project.name}`,
+      {
+        credentials: 'same-origin',
+      }
+    ).then((response) => {
+      return response.json();
+    }).then((_commits) => {
+      commits = _commits;
+    }).catch((error) => {
+      message = error.message;
+    });
+  });
+</script>
+
 <table>
   <tbody>
     {#each commits as commit}
@@ -10,14 +34,15 @@
           {#each commit.otherRefs as ref}
             {#if ref === "HEAD"}
               <span class="ref head">HEAD</span>
-            {:elseif ref.startsWith("refs/remotes/origin/master")}
+            {:else if ref.startsWith("refs/remotes/origin/master")}
               <span class="ref master">origin/master</span>
-            {:elseif ref.startsWith("refs/remotes/")}
+            {:else if ref.startsWith("refs/remotes/")}
               <span class="ref">{ref.slice("refs/remotes/".length)}</span>
-            {:elseif ref.startsWith("refs/heads/")}
-            {:elseif ref.startsWith("refs/tags/")}
+            {:else if ref.startsWith("refs/heads/")}
+              <!-- skip -->
+            {:else if ref.startsWith("refs/tags/")}
               <span class="ref tag">{ref.slice("refs/tags/".length)}</span>
-            {:elseif ref.startsWith("tag: refs/tags/")}
+            {:else if ref.startsWith("tag: refs/tags/")}
               <span class="ref tag">{ref.slice("tag: refs/tags/".length)}</span>
             {:else}
               <span class="ref">{ref}</span>
@@ -37,30 +62,3 @@
     {/each}
   </tbody>
 </table>
-
-
-<script>
-export default {
-  oncreate() {
-    const { project } = this.get();
-
-    const fetchStatusAPI = fetch(
-      `./api/commits/${project.name}`,
-      {
-        credentials: 'same-origin',
-      }
-    ).then((response) => {
-      return response.json();
-    }).then((commits) => {
-      this.set({commits});
-    }).catch((error) => {
-      this.set({message: error.message});
-    });
-  },
-  data() {
-    return {
-      commits: [],
-    };
-  },
-};
-</script>

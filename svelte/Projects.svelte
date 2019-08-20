@@ -1,3 +1,7 @@
+<script>
+  export let status;
+</script>
+
 <div class="sidebar-section box">
   <h3>Projects</h3>
 

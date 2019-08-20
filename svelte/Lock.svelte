@@ -1,5 +1,37 @@
+<script>
+  export let status;
+
+  import { onDestroy, onMount } from 'svelte';
+
+  function pad02(num) {
+    return ('0' + num).substr(-2);
+  }
+
+  function secondsToString(seconds) {
+    return pad02(Math.floor(seconds / 60)) + ':' + pad02(Math.floor(seconds % 60));
+  }
+
+  let now = Date.now();
+
+  onMount(() => {
+    const interval = setInterval(() => {
+      now = Date.now();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  });
+
+  const minutesAndSecondsLeft = (endTime, now) => {
+    const timeLeft = Date.parse(endTime) - now;
+    if (timeLeft < 0) {
+      location.reload();
+    }
+    return secondsToString(timeLeft / 1000);
+  };
+</script>
+
 <form class="sidebar-section box" action="./{status.currentProject.name}/lock" method="POST" id="lock-form"
-    data-lock-user="{status.currentProject.lock ? status.currentProject.lock.user : ''}">
+  data-lock-user="{status.currentProject.lock ? status.currentProject.lock.user : ''}">
   {#if status.currentProject.lock}
     <p>
       Working
@@ -40,41 +72,3 @@
   background-color: #eee;
 }
 </style>
-
-<script>
-function pad02(num) {
-  return ('0' + num).substr(-2);
-}
-
-function secondsToString(seconds) {
-  return pad02(Math.floor(seconds/60)) + ':' + pad02(Math.floor(seconds%60));
-}
-
-export default {
-  oncreate() {
-    this.interval = setInterval(() => {
-      this.set({ now: Date.now() });
-    }, 1000);
-  },
-
-  ondestroy() {
-    clearInterval(this.interval);
-  },
-
-  data() {
-    return {
-      now: Date.now(),
-    };
-  },
-
-  helpers: {
-    minutesAndSecondsLeft: (endTime, now) => {
-      const timeLeft = Date.parse(endTime) - now;
-      if (timeLeft < 0) {
-        location.reload();
-      }
-      return secondsToString(timeLeft / 1000);
-    },
-  },
-};
-</script>

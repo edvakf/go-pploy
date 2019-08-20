@@ -1,10 +1,8 @@
 /vendor
 /web/assets.go
-/assets/components/*
-!/assets/components/.keep
-/assets/bootstrap/*
+/assets/
+!/assets/index.html
 !/assets/bootstrap/.keep
-/assets/izitoast/*
 !/assets/izitoast/.keep
 /go-pploy
 /node_modules
