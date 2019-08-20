@@ -1,7 +1,7 @@
 <script>
-  export let project;
-
   import { onMount } from 'svelte';
+
+  export let project;
 
   let commits = [];
 
