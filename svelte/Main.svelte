@@ -1,13 +1,12 @@
 <script>
+  import { onDestroy, onMount } from 'svelte';
+  import Commits from './Commits.svelte';
+
   export let status;
 
-  import { onDestroy, onMount } from 'svelte';
-
-  export let commandLog;
-  export let commandLogFrame;
-  export let commitLogFrame;
-
-  import Commits from './Commits.svelte';
+  let commandLog;
+  let commandLogFrame;
+  let commitLogFrame;
 
   function disableAllButtons() {
     setTimeout(function () {
