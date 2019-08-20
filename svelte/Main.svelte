@@ -72,42 +72,40 @@
 </script>
 
 <div
-  class="panel {status.currentProject.lock && status.currentProject.lock.user === status.currentUser ? 'panel-danger' : 'panel-primary'}">
-  <div class="panel-heading">
-    <h2 class="panel-title">{status.currentProject.name}</h2>
-  </div>
+  class="card {status.currentProject.lock && status.currentProject.lock.user === status.currentUser ? 'border-danger' : 'border-primary'}">
+  <div class="card-header">{status.currentProject.name}</div>
 
   {#if status.currentProject.lock && status.currentProject.lock.user === status.currentUser}
-    <div class="well">
-      <h4>Checkout</h4>
+    <div class="p-4 bg-light">
+      <h5>Checkout</h5>
       <form action="./{status.currentProject.name}/checkout" method="post" class="form-inline command-form" target="command-log-frame" on:submit="{submitCommandForm}">
         <input type="text" class="form-control" name="ref" value="origin/{status.currentProject.defaultBranch}" required>
         <button class="btn btn-success checkout-button">Checkout</button>
       </form>
       <form action="./{status.currentProject.name}/deploy" method="post" class="command-form" target="command-log-frame" on:submit="{submitCommandForm}">
         {#each status.currentProject.deployEnvs as env}
-          <h4>Deploy to {env}</h4>
+          <h5>Deploy to {env}</h5>
           <button class="btn btn-success deploy-button" name="target" disabled value="{env}">Deploy to {env}</button>
         {/each}
       </form>
     </div>
   {/if}
 
-  <div class="panel-body">
+  <div class="card-body">
     {#if status.currentProject.readme}
-      <div>{@html status.currentProject.readme}</div>
+      <div class="card-text">{@html status.currentProject.readme}</div>
     {/if}
 
     <div id="command-log" class="hidden embed-responsive embed-responsive-16by9" bind:this={commandLog}>
       <iframe name="command-log-frame" class="log-frame embed-responsive-item" src="about:blank" bind:this={commandLogFrame} on:load="{doneCommand}" title="commit logs"></iframe>
     </div>
 
-    <h3>Recent Commits</h3>
+    <h4 class="p-1">Recent Commits</h4>
     <div id="commit-log" class="embed-responsive embed-responsive-16by9">
       <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="{loadCommits}" bind:this={commitLogFrame} title="recent commits"></iframe>
     </div>
 
-    <h3>Previous log <a href="./{status.currentProject.name}/logs?full=1&amp;generation=0" target="_blank"><span class="glyphicon glyphicon-hand-right"></span></a></h3>
+    <h4 class="p-1">Previous log <a href="./{status.currentProject.name}/logs?full=1&amp;generation=0" target="_blank">&#x27a1;</a></h4>
     <div class="embed-responsive embed-responsive-16by9">
       <iframe class="log-frame embed-responsive-item" src="./{status.currentProject.name}/logs" title="previous logs"></iframe>
     </div>

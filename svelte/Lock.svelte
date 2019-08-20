@@ -30,16 +30,16 @@
   };
 </script>
 
-<form class="sidebar-section box" action="./{status.currentProject.name}/lock" method="POST" id="lock-form"
+<form class="sidebar-section bg-light p-3 mb-3" action="./{status.currentProject.name}/lock" method="POST" id="lock-form"
   data-lock-user="{status.currentProject.lock ? status.currentProject.lock.user : ''}">
   {#if status.currentProject.lock}
     <p>
       Working
-      <span class="label label-default">{status.currentProject.lock.user}</span>
+      <span class="badge badge-secondary">{status.currentProject.lock.user}</span>
     </p>
     <p>
       Time left
-      <span class="label label-danger time-left">
+      <span class="badge badge-danger time-left">
         {minutesAndSecondsLeft(status.currentProject.lock.endTime, now)}
       </span>
     </p>
@@ -60,15 +60,3 @@
     <button class="btn btn-success btn-block" name="operation" value="gain">Start deploying</button>
   {/if}
 </form>
-
-<style>
-.sidebar-section {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  padding: 1em;
-}
-
-.box {
-  background-color: #eee;
-}
-</style>

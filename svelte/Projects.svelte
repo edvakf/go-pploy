@@ -2,31 +2,17 @@
   export let status;
 </script>
 
-<div class="sidebar-section box">
-  <h3>Projects</h3>
+<div class="sidebar-section bg-light p-3 mb-3">
+  <h4>Projects</h4>
 
-  <ul class="nav nav-pills nav-stacked">
+  <ul class="nav nav-pills flex-column">
     {#each status.allProjects as project}
-      <li class="{status.currentProject && status.currentProject.name === project.name ? 'active' : ''}" >
-        <a href="./{project.name}">
+      <li class="nav-item" >
+        <a href="./{project.name}" class="nav-link {status.currentProject && status.currentProject.name === project.name ? 'active' : ''}">
           {project.name}
-          {#if project.lock}
-            <i class="glyphicon glyphicon-time"></i>
-          {/if}
+          {#if project.lock}&#x23f3;{/if}
         </a>
       </li>
     {/each}
   </ul>
 </div>
-
-<style>
-.sidebar-section {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  padding: 1em;
-}
-
-.box {
-  background-color: #eee;
-}
-</style>
