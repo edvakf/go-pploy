@@ -6,7 +6,7 @@
 
 <p>Click on a project in the sidebar.</p>
 
-<h3>Add a project</h3>
+<h3 class="p-1">Add a project</h3>
 
 <form action="./_create" method="post">
   <div class="input-group">
@@ -19,15 +19,14 @@
 </form>
 
 {#if status.allProjects.length > 0}
-  <h3>Remove a project</h3>
+  <h3 class="p-1">Remove a project</h3>
 
   <table class="table table-striped">
     {#each status.allProjects as project}
       <tr>
         <td>
           <form action="./{project.name}/remove" method="post" class="form-inline">
-            <button class="btn btn-xs btn-danger confirm" data-confirm-text="Are you sure to remove {project.name}?"><i class="glyphicon glyphicon-trash"></i></button>
-            {project.name}
+            <button class="btn btn-sm btn-outline-danger confirm" data-confirm-text="Are you sure to remove {project.name}?">{project.name}</button>
           </form>
         </td>
       </tr>

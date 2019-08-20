@@ -39,13 +39,11 @@
   }
 </script>
 
-<header class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-light bg-light mb-3">
   <div class="container">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="./">pploy</a>
-    </div>
+    <a class="navbar-brand" href="./">pploy</a>
   </div>
-</header>
+</nav>
 
 <div class="container">
   <div class="row">
