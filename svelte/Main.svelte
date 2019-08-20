@@ -108,7 +108,7 @@
       <iframe class="log-frame embed-responsive-item" src="./assets/commits.html" on:load="{loadCommits}" bind:this={commitLogFrame} title="recent commits"></iframe>
     </div>
 
-    <h3>Previous log <a href="./{status.currentProject.name}/logs?full=1&amp;generation=0" target="_blank" class="glyphicon glyphicon-hand-right"></a></h3>
+    <h3>Previous log <a href="./{status.currentProject.name}/logs?full=1&amp;generation=0" target="_blank"><span class="glyphicon glyphicon-hand-right"></span></a></h3>
     <div class="embed-responsive embed-responsive-16by9">
       <iframe class="log-frame embed-responsive-item" src="./{status.currentProject.name}/logs" title="previous logs"></iframe>
     </div>
