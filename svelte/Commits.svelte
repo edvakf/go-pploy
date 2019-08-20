@@ -1,10 +1,9 @@
 <script>
-  export let status;
+  export let project;
 
   import { onMount } from 'svelte';
 
-  export let commits = [];
-  export let project;
+  let commits = [];
 
   onMount(() => {
 
@@ -15,8 +14,8 @@
       }
     ).then((response) => {
       return response.json();
-    }).then((commits) => {
-      commits = commits;
+    }).then((_commits) => {
+      commits = _commits;
     }).catch((error) => {
       message = error.message;
     });
