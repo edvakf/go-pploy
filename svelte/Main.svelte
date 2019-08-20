@@ -65,7 +65,7 @@
     }
     commits = new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
-      data: {
+      props: {
         project: status.currentProject,
       },
     });
