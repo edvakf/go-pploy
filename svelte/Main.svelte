@@ -24,10 +24,9 @@
 
   onMount(() => {
     // follow scroll
-    const f = commandLogFrame;
     const interval = setInterval(() => {
-      if (f.classList.contains('loading')) {
-        f.contentWindow.scrollTo(0, f.contentDocument.body.offsetHeight);
+      if (commandLogFrame.classList.contains('loading')) {
+        commandLogFrame.contentWindow.scrollTo(0, commandLogFrame.contentDocument.body.offsetHeight);
       }
     }, 200);
 
@@ -44,8 +43,8 @@
   }
 
   function doneCommand() {
-    if (!commandLogFrame) {
-      return; // on:load is called while dom is still incomplete
+    if (commandLogFrame.getAttribute('src') == 'about:blank') {
+      return;
     }
 
     // set border to back to black
@@ -56,13 +55,8 @@
     enableAllButtons();
   }
 
-  let commits = null;
-
   function loadCommits() {
-    if (commits) {
-      commits.$destroy();
-    }
-    commits = new Commits({
+    new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
       props: {
         project: status.currentProject,
