@@ -44,8 +44,8 @@
   }
 
   function doneCommand() {
-    if (!commandLogFrame) {
-      return; // on:load is called while dom is still incomplete
+    if (commandLogFrame.getAttribute('src') == 'about:blank') {
+      return;
     }
 
     // set border to back to black
