@@ -56,13 +56,8 @@
     enableAllButtons();
   }
 
-  let commits = null;
-
   function loadCommits() {
-    if (commits) {
-      commits.$destroy();
-    }
-    commits = new Commits({
+    new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
       props: {
         project: status.currentProject,
