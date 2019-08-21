@@ -17,19 +17,3 @@
     </span>
   </div>
 </form>
-
-{#if status.allProjects.length > 0}
-  <h3 class="p-1">Remove a project</h3>
-
-  <table class="table table-striped">
-    {#each status.allProjects as project}
-      <tr>
-        <td>
-          <form action="./{project.name}/remove" method="post" class="form-inline">
-            <button class="btn btn-sm btn-outline-danger confirm" data-confirm-text="Are you sure to remove {project.name}?">{project.name}</button>
-          </form>
-        </td>
-      </tr>
-    {/each}
-  </table>
-{/if}

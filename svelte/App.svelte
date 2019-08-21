@@ -5,6 +5,7 @@
   import Projects from './Projects.svelte';
   import Main from './Main.svelte';
   import Welcome from './Welcome.svelte';
+  import Remove from './Remove.svelte';
 
   export let status;
 
@@ -64,7 +65,12 @@
         {#if status.currentProject}
         <Lock {status}></Lock>
         {/if}
+
         <Projects {status}></Projects>
+
+        {#if status.currentProject}
+        <Remove {status}></Remove>
+        {/if}
       </aside>
 
     {/if}
