@@ -33,7 +33,11 @@
     return () => clearInterval(interval);
   });
 
+  let submitted = false; // the form is submitted into the command log frame at least once. this prevents doneCommand to be called on page load.
+
   function submitCommandForm() {
+    submitted = true;
+
     commandLog.classList.remove('hidden');
 
     // set border to red
@@ -43,7 +47,7 @@
   }
 
   function doneCommand() {
-    if (commandLogFrame.getAttribute('src') == 'about:blank') {
+    if (!submitted) {
       return;
     }
 
