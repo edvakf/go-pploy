@@ -59,8 +59,13 @@
     enableAllButtons();
   }
 
+  let commits = null;
+
   function loadCommits() {
-    new Commits({
+    if (commits) {
+      commits.$destroy(); // without this, the commits iframe won't be reloaded.
+    }
+    commits = new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
       props: {
         project: status.currentProject,
