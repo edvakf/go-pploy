@@ -25,7 +25,7 @@
   onMount(() => {
     // follow scroll
     const interval = setInterval(() => {
-      if (commandLogFrame.classList.contains('loading')) {
+      if (commandLogFrame.classList.contains('loading') && commandLogFrame.contentDocument.body) {
         commandLogFrame.contentWindow.scrollTo(0, commandLogFrame.contentDocument.body.offsetHeight);
       }
     }, 200);
@@ -59,8 +59,13 @@
     enableAllButtons();
   }
 
+  let commits = null;
+
   function loadCommits() {
-    new Commits({
+    if (commits) {
+      commits.$destroy(); // without this, the commits iframe won't be reloaded.
+    }
+    commits = new Commits({
       target: commitLogFrame.contentDocument.querySelector('commits'),
       props: {
         project: status.currentProject,
