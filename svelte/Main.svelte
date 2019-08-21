@@ -24,10 +24,9 @@
 
   onMount(() => {
     // follow scroll
-    const f = commandLogFrame;
     const interval = setInterval(() => {
-      if (f.classList.contains('loading')) {
-        f.contentWindow.scrollTo(0, f.contentDocument.body.offsetHeight);
+      if (commandLogFrame.classList.contains('loading')) {
+        commandLogFrame.contentWindow.scrollTo(0, commandLogFrame.contentDocument.body.offsetHeight);
       }
     }, 200);
 
