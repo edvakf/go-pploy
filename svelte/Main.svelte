@@ -88,7 +88,7 @@
       <form action="./{status.currentProject.name}/deploy" method="post" class="command-form" target="command-log-frame" on:submit="{submitCommandForm}">
         {#each status.currentProject.deployEnvs as env}
           <h5>Deploy to {env}</h5>
-          <button class="btn btn-success deploy-button" name="target" disabled value="{env}">Deploy to {env}</button>
+          <button class="btn btn-success deploy-button" name="target" value="{env}">Deploy to {env}</button>
         {/each}
       </form>
     </div>
