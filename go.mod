@@ -1,6 +1,6 @@
 module github.com/edvakf/go-pploy
 
-go 1.12
+go 1.13
 
 require (
 	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
@@ -18,6 +18,7 @@ require (
 	github.com/labstack/gommon v0.0.0-20170925052817-57409ada9da0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.3 // indirect
+	github.com/mitchellh/gox v1.0.1 // indirect
 	github.com/pkg/errors v0.8.0
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

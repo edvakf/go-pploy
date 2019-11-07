@@ -6,3 +6,4 @@
 !/assets/izitoast/.keep
 /go-pploy
 /node_modules
+/pkg/

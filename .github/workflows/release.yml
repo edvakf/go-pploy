@@ -1,0 +1,32 @@
+name: Release
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GO11MODULE: on
+        GOPATH: /home/runner/work
+      run: |
+        make cross-build
+        go get github.com/tcnksm/ghr
+        export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH" | sed 's/refs\/tags\///')
+        $GOPATH/bin/ghr -n ${TAGNAME} -b "Release ${TAGNAME}" ${TAGNAME} pkg/
