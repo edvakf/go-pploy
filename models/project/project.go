@@ -153,7 +153,6 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 
 	r2 := io.TeeReader(r, f)
 	return r2, nil
-	// return stdoutReader(cmd, callback)
 }
 
 func stdoutStderrReader(cmd *exec.Cmd, callback func()) (io.Reader, error) {
@@ -232,7 +231,7 @@ func (p *Project) LogReader(full bool, generation int) (io.ReadCloser, error) {
 func (p *Project) GetDefaultBranch() (string, error) {
 	cmd := exec.Command("git", "remote", "show", "origin")
 	cmd.Dir = workdir.ProjectDir(p.Name)
-	reader, err := stdoutReader(cmd, nil)
+	reader, err := stdoutStderrReader(cmd, nil)
 
 	if err != nil {
 		return "", err
