@@ -118,7 +118,7 @@ func (p *Project) Checkout(commit string) (io.Reader, error) {
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "DEPLOY_COMMIT="+commit)
 
-	return stdoutReader(cmd, nil)
+	return stdoutStderrReader(cmd, nil)
 }
 
 // Deploy runs project's deploy script
@@ -145,7 +145,7 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 		datadog.Deployed(p.Name, user, env)
 		hook.Deployed(p.Name, user, env)
 	}
-	r, err := stdoutReader(cmd, callback)
+	r, err := stdoutStderrReader(cmd, callback)
 	if err != nil {
 		f.Close()
 		return nil, err
@@ -156,11 +156,15 @@ func (p *Project) Deploy(env string, user string) (io.Reader, error) {
 	// return stdoutReader(cmd, callback)
 }
 
-func stdoutReader(cmd *exec.Cmd, callback func()) (io.Reader, error) {
+func stdoutStderrReader(cmd *exec.Cmd, callback func()) (io.Reader, error) {
 	// StdoutPipe returns a ReadCloser, but it's not meant to be Close()'ed by users
-	out, err := cmd.StdoutPipe()
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to run command")
+		return nil, errors.Wrap(err, "failed to get stdout pipe")
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get stderr pipe")
 	}
 	err = cmd.Start()
 	if err != nil {
@@ -172,7 +176,7 @@ func stdoutReader(cmd *exec.Cmd, callback func()) (io.Reader, error) {
 			callback()
 		}
 	}()
-	return out, nil
+	return io.MultiReader(stdout, stderr), nil
 }
 
 func (p *Project) readReadme() error {
